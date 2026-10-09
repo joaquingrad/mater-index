@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Abel Blanco — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      font-size: 7px;
+      text-align: center;
+      line-height: 8px;
+      color: #333333;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+      font-family: "Redaction70", serif;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffcccc;
+      border-left: 3px solid #990000;
+      color: #660000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+      font-family: "Redaction50", serif;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+      font-family: "Redaction70", serif;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    .redactado {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+    }
+
+    .redactado-parcial {
+      background-color: #555555;
+      color: #555555;
+      font-family: "Redaction70", serif;
+      user-select: none;
+    }
+
+    .texto-corrupto {
+      display: inline;
+      font-family: "Redaction100", serif;
+      animation: glitch-texto 1.4s infinite;
+    }
+
+    @keyframes glitch-texto {
+      0%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      5%   { opacity: 0.2; transform: skewX(-12deg);  letter-spacing: -6px; }
+      6%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      40%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      41%  { opacity: 0.1; transform: skewX(8deg);   letter-spacing: 8px; }
+      42%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      75%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      76%  { opacity: 0.3; transform: skewX(-6deg);  letter-spacing: -3px; }
+      77%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      100% { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+    }
+
+    #infobox {
+      float: right;
+      width: 240px;
+      margin: 0 0 16px 16px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.82em;
+      font-family: "Courier New", Courier, monospace;
+      filter: contrast(0.85);
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #aaaaaa;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox table { width: 100%; border-collapse: collapse; }
+
+    #infobox td {
+      padding: 4px 8px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 40%;
+      color: #666666;
+    }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+    }
+
+    /* --- ESPIRAL DE POPUPS --- */
+    .popup-espiral {
+      position: fixed;
+      background-color: #e8e8e8;
+      border: 2px solid #1a1a1a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.82em;
+      box-shadow: 6px 6px 0px #000000;
+      color: #1a1a1a;
+      cursor: default;
+      user-select: none;
+    }
+
+    .popup-espiral .popup-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .popup-espiral .popup-cerrar {
+      cursor: pointer;
+      background: #880000;
+      color: white;
+      border: none;
+      padding: 0 6px;
+      font-family: "Courier New", monospace;
+    }
+
+    .popup-espiral .popup-cuerpo {
+      padding: 10px 12px;
+      line-height: 1.5;
+    }
+
+    .popup-espiral .popup-alerta {
+      color: #880000;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .popup-espiral .popup-boton {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 0 12px 10px 12px;
+      padding: 5px;
+      background-color: #cccccc;
+      border: 2px solid #1a1a1a;
+      font-family: "Courier New", monospace;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .popup-espiral .popup-boton:hover { background-color: #aaaaaa; }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+
+    @keyframes pulso-alerta {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    /* --- WIDGET MENSAJITO --- */
+    #widget-mensajito {
+      position: fixed;
+      bottom: 48px;
+      right: calc(50% - 37.5vw - 10px);
+      width: 280px;
+      background: #F0FBF6;
+      border-radius: 16px 16px 0 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      z-index: 8000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+       #widget-mensajito.visible { display: flex; }    #widget-mensajito.visible { 
+      display: flex;
+      animation: entrar-widget 0.4s ease forwards;
+    }
+
+    @keyframes entrar-widget {
+      0%   { transform: translateX(120%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    #widget-header {
+      background: linear-gradient(to right, #134E3A, #22B07D);
+      color: #ffffff;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    #widget-header .punto { 
+      width: 8px; height: 8px; 
+      background: #33ff33; 
+      border-radius: 50%; 
+      display: inline-block; 
+      margin-right: 6px;
+      animation: parpadeo-punto 2s infinite;
+    }
+
+    @keyframes parpadeo-punto {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    #widget-mensajes {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .wmsg-recibido {
+      background: #ffffff;
+      border-radius: 4px 12px 12px 12px;
+      padding: 8px 12px;
+      color: #1a1a1a;
+      max-width: 90%;
+      line-height: 1.5;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .wmsg-enviado {
+      background: #22B07D;
+      border-radius: 12px 4px 12px 12px;
+      padding: 8px 12px;
+      color: #ffffff;
+      max-width: 90%;
+      align-self: flex-end;
+      line-height: 1.5;
+    }
+
+    #widget-opciones {
+      padding: 8px 12px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      visibility: hidden;
+      transition: visibility 0s, opacity 0.4s;
+      opacity: 0;
+    }
+
+    .wopcion {
+      background: #ffffff;
+      border: 1px solid #22B07D;
+      border-radius: 20px;
+      padding: 6px 14px;
+      color: #134E3A;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .wopcion:hover { background: #F0FBF6; }
+
+    .widget-glitch {
+      animation: widget-glitch-anim 0.15s infinite;
+    }
+
+    @keyframes widget-glitch-anim {
+      0%   { transform: skewX(0deg); opacity: 1; filter: none; }
+      25%  { transform: skewX(-8deg); opacity: 0.6; filter: hue-rotate(90deg); }
+      50%  { transform: skewX(6deg); opacity: 0.3; filter: invert(1); }
+      75%  { transform: skewX(-4deg); opacity: 0.7; filter: hue-rotate(180deg); }
+      100% { transform: skewX(0deg); opacity: 1; filter: none; }
+    }
+        @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana">_</span>
+      <span class="boton-ventana">□</span>
+      <span class="boton-ventana">×</span>
+    </div>
+    <div id="monitor-cuerpo">
+            <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor" style="animation: pulso-alerta 1.2s infinite;">−4 niveles</div>
+    </div>
+  </div>
+
+  <div id="popup-container"></div>
+
+  <div id="ventana">
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Abel Blanco</h1>
+          <div class="advertencia-articulo">
+            ⚠ Integridad del archivo comprometida. Contenido parcialmente recuperado.
+          </div>
+
+          <div id="infobox">
+            <div class="infobox-titulo">Abel Blanco</div>
+            <img src="imagenes/articulos/Abel_Blanco.jpg" alt="Abel Blanco" style="width:100%; height:auto; display:block; filter:contrast(0.7) grayscale(0.4);">
+            <table>
+              <tr><td>Nacimiento</td><td><span class="redactado">██</span> · <span class="redactado">██</span> · 1941</td></tr>
+              <tr><td>Fallecimiento</td><td>1983 · Ramal Sur</td></tr>
+              <tr><td>Ocupación</td><td>Delegado gremial</td></tr>
+              <tr><td>Afiliación</td><td><a href="feos.html">F.E.O.S.</a></td></tr>
+              <tr><td>Causa</td><td><span class="redactado">████████████████</span></td></tr>
+            </table>
+          </div>
+
+                   <p>
+            <span class="redactado">████████████████████████████████████████████████████</span>
+            delegado del ramal sur.
+            <span class="redactado">████████████████████</span>.
+          </p>
+
+          <h2>Registro Oficial </h2>
+          <p>
+            Hallado el <span class="redactado">██</span> de febrero de 1983
+            en el <span class="redactado-parcial">████████████</span> del ramal sur.
+            Causa de muerte: <span class="redactado">██████████████████████</span>.
+            <span class="texto-corrupto">El agua no bajó en tres días</span>.
+            Un pequeño mausoleo en su nombre se encuentra instalado dentro del MAVYD.
+          </p>
+
+          <h2>Testimonios</h2>
+          <p>
+       La <span class="redactado">███████████████████████████████████████████████████████████</span>
+<span class="redactado">████████████████████████████</span> tras <span class="redactado">███████████████████████████</span>
+<span class="redactado">█████████████</span> vinculado al ascenso de <a href="florencio.html">Florencio Schmit</a> dentro de <span class="redactado">███████</span>
+          </p>
+
+          <div id="categorias">
+            Categorías: Personas · Niveles −4 a −6 · Archivo dañado · NO INDEXAR
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        localStorage.setItem('paginaAnterior', window.location.href);
+    actualizarMonitor(integridad);
+    if (integridad <= 0) window.location.href = 'gameover.html';
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+   
+
+    var variantesGlitch = ["Redaction10", "Redaction50", "Redaction100", "Redaction20", "Redaction70"];
+    document.querySelectorAll('.texto-corrupto').forEach(function(el) {
+      el.addEventListener('animationiteration', function() {
+        var i = 0;
+        var intervalo = setInterval(function() {
+          el.style.fontFamily = variantesGlitch[i % variantesGlitch.length];
+          i++;
+        }, 120);
+        setTimeout(function() {
+          clearInterval(intervalo);
+          el.style.fontFamily = "Redaction100";
+        }, 600);
+      });
+    });
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+      // WIDGET MENSAJITO
+    setTimeout(function() {
+      var widget = document.getElementById('widget-mensajito');
+      widget.classList.add('visible');
+
+      // Sonido de notificación
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+
+      // Opciones aparecen 1.5s después
+      setTimeout(function() {
+              document.getElementById('widget-opciones').style.visibility = 'visible';
+        document.getElementById('widget-opciones').style.opacity = '1';
+      }, 1000);
+
+    }, 5000);
+
+    function escribirLetraPorLetra(elemento, texto, callback) {
+      var i = 0;
+      var intervalo = setInterval(function() {
+        elemento.textContent += texto[i];
+        i++;
+        if (i >= texto.length) {
+          clearInterval(intervalo);
+          if (callback) callback();
+        }
+      }, 40);
+    }
+
+    function responderA() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      enviado.textContent = 'Recibí una enciclopedia, creo que encontramos a Abel.';
+      mensajes.appendChild(enviado);
+      setTimeout(function() {
+        var respuesta = document.createElement('div');
+        respuesta.className = 'wmsg-recibido';
+        respuesta.textContent = '¡Fantástico! Reunámonos cuanto antes.';
+        mensajes.appendChild(respuesta);
+        mensajes.scrollTop = mensajes.scrollHeight;
+      }, 1200);
+    }
+
+    function responderB() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      enviado.textContent = 'Creo que esta conversación está siendo monitoreada.';
+      mensajes.appendChild(enviado);
+      setTimeout(function() {
+        var respuesta = document.createElement('div');
+        respuesta.className = 'wmsg-recibido';
+        respuesta.textContent = '¿A qué te referís?';
+        mensajes.appendChild(respuesta);
+        mensajes.scrollTop = mensajes.scrollHeight;
+        setTimeout(function() {
+          var widget = document.getElementById('widget-mensajito');
+          widget.classList.add('widget-glitch');
+          setTimeout(function() {
+            widget.style.display = 'none';
+          }, 800);
+        }, 1500);
+      }, 1200);
+    }    // WIDGET MENSAJITO
+    setTimeout(function() {
+      var widget = document.getElementById('widget-mensajito');
+      widget.classList.add('visible');
+
+      // Sonido de notificación
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+
+      // Opciones aparecen 1.5s después
+      setTimeout(function() {
+        document.getElementById('widget-opciones').style.display = 'flex';
+      }, 1500);
+
+    }, 5000);
+
+    function escribirLetraPorLetra(elemento, texto, callback) {
+      var i = 0;
+      var intervalo = setInterval(function() {
+        elemento.textContent += texto[i];
+        i++;
+        if (i >= texto.length) {
+          clearInterval(intervalo);
+          if (callback) callback();
+        }
+      }, 40);
+    }
+
+       function responderA() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      enviado.textContent = '';
+      mensajes.appendChild(enviado);
+      escribirLetraPorLetra(enviado, 'Recibí una enciclopedia, creo que encontramos a Abel.', function() {
+        setTimeout(function() {
+          var respuesta = document.createElement('div');
+          respuesta.className = 'wmsg-recibido';
+          respuesta.textContent = '';
+          mensajes.appendChild(respuesta);
+          mensajes.scrollTop = mensajes.scrollHeight;
+          escribirLetraPorLetra(respuesta, '¡Fantástico! Reunámonos cuanto antes.');
+        }, 1200);
+      });
+    }
+
+    function responderB() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      enviado.textContent = '';
+      mensajes.appendChild(enviado);
+      escribirLetraPorLetra(enviado, 'Creo que esta conversación está siendo monitoreada.', function() {
+        setTimeout(function() {
+          var respuesta = document.createElement('div');
+          respuesta.className = 'wmsg-recibido';
+          respuesta.textContent = '';
+          mensajes.appendChild(respuesta);
+          mensajes.scrollTop = mensajes.scrollHeight;
+          escribirLetraPorLetra(respuesta, '¿A qué te referís?', function() {
+            setTimeout(function() {
+              var widget = document.getElementById('widget-mensajito');
+              widget.classList.add('widget-glitch');
+              setTimeout(function() {
+                widget.style.display = 'none';
+              }, 800);
+            }, 1500);
+          });
+        }, 1200);
+      });
+    }
+        // FUNCIÓN DE DAÑO
+    var audioCtx = null;
+    document.addEventListener('click', function() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    });
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      // SONIDO DE ERROR
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // PARPADEO ROJO DEL LABEL
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      // CUENTA REGRESIVA
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
+  </script>
+  <!-- WIDGET MENSAJITO -->
+  <div id="widget-mensajito">
+    <div id="widget-header">
+      <div><span class="punto"></span>Dr. Ferreyra</div>
+      <div style="font-size:11px; font-weight:normal; opacity:0.8;">mensajito</div>
+    </div>
+    <div id="widget-mensajes">
+      <div class="wmsg-recibido">Por favor, confirmame el horario cuando puedas.</div>
+    </div>
+    <div id="widget-opciones">
+      <button class="wopcion" onclick="responderA()">"Recibí una enciclopedia, creo que encontramos a Abel."</button>
+      <button class="wopcion" onclick="responderB()">"Creo que esta conversación está siendo monitoreada."</button>
+    </div>
+  </div>
+</body>
+</html>

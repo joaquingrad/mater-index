@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    /* --- VENTANA --- */
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #000000;
+      color: #33ff33;
+      display: none;
+      flex-direction: column;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      overflow: hidden;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    /* --- BARRA SUPERIOR INTERNA --- */
+    #barra-superior {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      font-size: 0.78em;
+      border-bottom: 1px solid #111111;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #barra-superior .alerta { color: #ff4444; }
+
+    /* --- CENTRO --- */
+    #centro {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 40px 16px;
+    }
+
+    #logo {
+      width: 200px;
+      height: auto;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #titulo-principal {
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 5em;
+      color: #ffffff;
+      letter-spacing: 8px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #subtitulo-inferior {
+      font-size: 0.78em;
+      letter-spacing: 6px;
+      text-align: center;
+      color: #33ff33;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #links-loby {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #buscar {
+      font-size: 1.1em;
+      font-weight: bold;
+      text-decoration: none;
+      color: #0645ad;
+      cursor: not-allowed;
+      letter-spacing: 1px;
+    }
+
+    #buscar.es-link {
+      color: #cc0000;
+      cursor: not-allowed;
+    }
+
+    #suerte {
+      font-size: 1.1em;
+      font-weight: bold;
+      text-decoration: none;
+      color: #555555;
+      cursor: default;
+      letter-spacing: 1px;
+    }
+
+    #suerte.es-link {
+      color: #0645ad;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* --- PIE --- */
+    #pie {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 16px;
+      font-size: 0.72em;
+      color: #555555;
+      border-top: 1px solid #111111;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    /* --- GLITCH --- */
+    @keyframes glitch-boton {
+      0%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      10%  { opacity: 0.2; transform: skewX(-10deg); letter-spacing: -4px; }
+      12%  { opacity: 1;   transform: skewX(6deg);   letter-spacing: 6px; }
+      14%  { opacity: 0.3; transform: skewX(-4deg);  letter-spacing: -2px; }
+      16%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      100% { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+    }
+
+    .glitchando { animation: glitch-boton 1s forwards; }
+
+    /* --- BARRA DE TAREAS --- */
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE TAREAS -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo" id="task-mater" style="display:none;">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <!-- VENTANA -->
+  <div id="ventana">
+
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="barra-superior">
+      <span>MATER.INDEX</span>
+      <span class="alerta">INTEGRIDAD <span id="integridad-barra">71</span>% · ACCESO NO AUTORIZADO</span>
+    </div>
+
+    <div id="centro">
+      <img src="imagenes/logo2.png" alt="MATER.INDEX" id="logo">
+      <div id="titulo-principal">MATER.INDEX</div>
+      <div id="subtitulo-inferior">· Piadoso como una paloma y prudente como una víbora ·</div>
+      <div id="links-loby">
+        <a id="buscar" href="#" onclick="irBuscar(event)">&gt; buscar</a>
+        <a id="suerte" href="#" onclick="irSuerte(event)">&gt; Aún tengo suerte</a>
+      </div>
+    </div>
+
+    <div id="pie">
+      <span>Archivos · Contenido Inestable · Niveles −2 a −8 · NO INDEXAR</span>
+      <span id="pie-derecha">ANTORCHA ▮▮░░░</span>
+    </div>
+
+  </div>
+
+  <script>
+
+    // LOCALSTORAGE
+    if (!localStorage.getItem('integridad')) {
+      localStorage.setItem('integridad', '71');
+    }
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+    document.getElementById('integridad-barra').textContent = integridad;
+
+    // SECUENCIA DE APARICIÓN
+    setTimeout(function() {
+      document.getElementById('task-mater').style.display = 'flex';
+    }, 800);
+
+    setTimeout(function() {
+      var ventana = document.getElementById('ventana');
+      ventana.style.display = 'flex';
+    }, 1400);
+
+    setTimeout(function() {
+      document.getElementById('barra-superior').style.opacity = '1';
+    }, 1800);
+
+    setTimeout(function() {
+      document.getElementById('logo').style.opacity = '1';
+    }, 2400);
+
+    setTimeout(function() {
+      document.getElementById('titulo-principal').style.opacity = '1';
+      iniciarGlitchTitulo();
+    }, 3000);
+
+    setTimeout(function() {
+      document.getElementById('subtitulo-inferior').style.opacity = '1';
+    }, 3400);
+
+    setTimeout(function() {
+      document.getElementById('links-loby').style.opacity = '1';
+      activarLinks();
+    }, 3800);
+
+    setTimeout(function() {
+      document.getElementById('pie').style.opacity = '1';
+    }, 4200);
+
+    // GLITCH TÍTULO
+    var variantesTitulo = [
+      "Redaction", "Redaction10", "Redaction20", "Redaction35",
+      "Redaction50", "Redaction70", "Redaction100",
+      "Redaction70", "Redaction50", "Redaction35", "Redaction20", "Redaction10"
+    ];
+
+    var titulo = document.getElementById('titulo-principal');
+    var iTitulo = 0;
+
+    function iniciarGlitchTitulo() {
+      setInterval(function() {
+        titulo.style.fontFamily = '"' + variantesTitulo[iTitulo % variantesTitulo.length] + '","Times New Roman",serif';
+        iTitulo++;
+      }, 180);
+    }
+
+    // LINKS
+    function activarLinks() {
+      var buscar = document.getElementById('buscar');
+      var suerte = document.getElementById('suerte');
+
+      setTimeout(function() {
+        hacerGlitch(buscar, function() {
+          buscar.classList.add('es-link');
+          iniciarLoop(buscar, 7000);
+        });
+      }, 400);
+
+      setTimeout(function() {
+        hacerGlitch(suerte, function() {
+          suerte.classList.add('es-link');
+          iniciarLoop(suerte, 11000);
+        });
+      }, 800);
+    }
+
+    function hacerGlitch(elemento, callback) {
+      elemento.classList.add('glitchando');
+      setTimeout(function() {
+        elemento.classList.remove('glitchando');
+        if (callback) callback();
+      }, 1000);
+    }
+
+    function iniciarLoop(elemento, intervalo) {
+      setInterval(function() {
+        elemento.classList.remove('es-link');
+        hacerGlitch(elemento, function() {
+          elemento.classList.add('es-link');
+        });
+      }, intervalo);
+    }
+
+    function irBuscar(event) {
+      event.preventDefault();
+      if (!document.getElementById('buscar').classList.contains('es-link')) return;
+      window.location.href = '404.html';
+    }
+
+    function irSuerte(event) {
+      event.preventDefault();
+      if (!document.getElementById('suerte').classList.contains('es-link')) return;
+      window.location.href = 'feos.html';
+    }
+
+    // RELOJ
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    // CTRL+R
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+  </script>
+
+</body>
+</html>

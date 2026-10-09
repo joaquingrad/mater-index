@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>MAVYD — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      position: relative;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    .redactado {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+    }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* --- CANVAS ANTORCHA --- */
+    #antorcha-canvas {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 4000;
+    }
+
+    /* --- WIDGET EDITOR --- */
+    #widget-editor {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      z-index: 9000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #widget-editor.visible {
+      display: flex;
+      animation: glitch-entrada 0.6s steps(1) forwards;
+    }
+
+    @keyframes glitch-entrada {
+      0%   { opacity: 0; transform: translate(-50%, -50%) skewX(20deg); }
+      20%  { opacity: 1; transform: translate(-48%, -52%) skewX(-8deg); }
+      40%  { opacity: 0; transform: translate(-52%, -48%) skewX(4deg); }
+      60%  { opacity: 1; transform: translate(-50%, -50%) skewX(-2deg); }
+      100% { opacity: 1; transform: translate(-50%, -50%) skewX(0deg); }
+    }
+
+    #editor-header {
+      background: linear-gradient(to right, #1a0030, #4a0080);
+      color: #b06fdb;
+      padding: 8px 12px;
+      font-family: "Courier New", monospace;
+      font-size: 0.82em;
+      letter-spacing: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #editor-mensajes {
+      background: #0a0a0a;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 80px;
+    }
+
+    .emsg-editor {
+      color: #b06fdb;
+      font-family: "Courier New", monospace;
+      font-size: 0.85em;
+      line-height: 1.6;
+    }
+
+    .emsg-usuario {
+      color: #33ff33;
+      font-family: "Courier New", monospace;
+      font-size: 0.85em;
+      line-height: 1.6;
+      align-self: flex-end;
+    }
+
+    #editor-opciones {
+      background: #111111;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-top: 1px solid #222222;
+    }
+
+    .eopcion {
+      background: #1a1a1a;
+      border: 1px solid #b06fdb;
+      border-radius: 2px;
+      padding: 6px 12px;
+      color: #b06fdb;
+      font-size: 12px;
+      font-family: "Courier New", monospace;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .eopcion:hover { background: #2a0050; }
+
+    /* --- TASKBAR --- */
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo { width: 16px; height: 16px; object-fit: contain; }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS ANTORCHA -->
+  <canvas id="antorcha-canvas"></canvas>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−6 niveles</div>
+    </div>
+  </div>
+
+  <!-- WIDGET EDITOR -->
+  <div id="widget-editor">
+    <div id="editor-header">
+      <span>▓ x7r3.0-mndx@██████.net</span>
+      <span style="opacity:0.5; font-size:0.85em;">mensajito</span>
+    </div>
+    <div id="editor-mensajes">
+      <div class="emsg-editor">▓▒░ ¿cómo encontraste esta página? ░▒▓</div>
+    </div>
+    <div id="editor-opciones">
+      <button class="eopcion" onclick="responderEditor(0)">› La recibí de una fuente anónima.</button>
+      <button class="eopcion" onclick="responderEditor(1)">› Estoy investigando a Abel Blanco.</button>
+      <button class="eopcion" onclick="responderEditor(2)">› ¿Quién sos?</button>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>MAVYD</h1>
+          <div class="advertencia-articulo">
+            ⚠ Este artículo está siendo modificado en este momento.
+          </div>
+
+          <p>
+            El <strong>Museo Archivo de la Victoria y la Derrota</strong> (MAVYD) es una institución cultural subterránea fundada en 1987 por miembros sobrevivientes de <a href="feos.html">F.E.O.S.</a> en el ramal sur del alcantarillado porteño. Preserva documentos, objetos y memorias relacionadas con <a href="cloacazo.html">El Cloacazo</a> y sus protagonistas.
+          </p>
+
+          <h2>Colección permanente</h2>
+          <p>
+            La colección incluye el mausoleo dedicado a <a href="abel_blanco.html">Abel Blanco</a>, fotografías del período, panfletos gremiales y una serie de documentos clasificados cuyo contenido <span class="redactado">████████████████████████████████████████████████████</span>.
+          </p>
+
+          <h2>Acceso</h2>
+          <p>
+            El MAVYD no figura en ningún registro oficial de instituciones culturales de la Ciudad de Buenos Aires. Su ubicación exacta <span class="redactado">████████████████████████████████████████████████████</span>. Su único acceso habilitado <span class="redactado">████████████████████</span> a través de la estación de la línea de subte B <a href="byzantov.html">Sergei Konstantínovich Byzantov</a>.
+          </p>
+
+          <div id="categorias">
+            Categorías: Instituciones · Nivel −6 · Archivos · NO INDEXAR
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+
+var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        localStorage.setItem('paginaAnterior', window.location.href);
+    actualizarMonitor(integridad);
+    if (integridad <= 0) window.location.href = 'gameover.html';
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    // WIDGET EDITOR
+    setTimeout(function() {
+      document.getElementById('widget-editor').classList.add('visible');
+    }, 3000);
+
+    function escribirLetraPorLetra(elemento, texto, callback) {
+      elemento.textContent = '';
+      var i = 0;
+      var intervalo = setInterval(function() {
+        elemento.textContent += texto[i];
+        i++;
+        if (i >= texto.length) {
+          clearInterval(intervalo);
+          if (callback) callback();
+        }
+      }, 35);
+    }
+
+    function responderEditor(opcion) {
+      var opciones = document.getElementById('editor-opciones');
+      var mensajes = document.getElementById('editor-mensajes');
+      opciones.style.display = 'none';
+
+      var textos = [
+        'La recibí de una fuente anónima.',
+        'Estoy investigando a Abel Blanco.',
+        '¿Quién sos?'
+      ];
+
+      var enviado = document.createElement('div');
+      enviado.className = 'emsg-usuario';
+      mensajes.appendChild(enviado);
+
+      escribirLetraPorLetra(enviado, textos[opcion], function() {
+        setTimeout(function() {
+          var respuesta = document.createElement('div');
+          respuesta.className = 'emsg-editor';
+          mensajes.appendChild(respuesta);
+          escribirLetraPorLetra(respuesta, 'Ya me cansé de soñar con ustedes.', function() {
+            setTimeout(function() {
+              var widget = document.getElementById('widget-editor');
+              widget.style.opacity = '0';
+              widget.style.transition = 'opacity 0.3s';
+              setTimeout(function() {
+                widget.style.display = 'none';
+                activarAntorcha();
+              }, 300);
+            }, 1000);
+          });
+        }, 1200);
+      });
+    }
+
+    function activarAntorcha() {
+      var canvas = document.getElementById('antorcha-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.style.display = 'block';
+
+      var ctx = canvas.getContext('2d');
+      var mouseX = window.innerWidth / 2;
+      var mouseY = window.innerHeight / 2;
+
+      window.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function dibujar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'rgba(0,0,0,0.97)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                      var gradiente = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 130);
+        gradiente.addColorStop(0,   'rgba(0,0,0,1)');
+        gradiente.addColorStop(1,   'rgba(0,0,0,0)');
+
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = gradiente;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+
+        requestAnimationFrame(dibujar);
+      }
+      dibujar();
+    }
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // FUNCIÓN DE DAÑO
+    var audioCtx = null;
+    document.addEventListener('click', function() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    });
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      // SONIDO DE ERROR
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // PARPADEO ROJO DEL LABEL
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      // CUENTA REGRESIVA
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
+  </script>
+
+</body>
+</html>

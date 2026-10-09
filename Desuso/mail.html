@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inbox</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+    }
+
+    .card-wrapper {
+      background: #EFEAFE;
+      border-radius: 24px;
+      padding: 40px;
+      width: 1100px;
+      min-height: 680px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 30px;
+      font-weight: bold;
+      color: #2A2150;
+    }
+
+    .btn-new {
+      background: #2A2150;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 13px 24px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-family: Georgia, serif;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .note {
+      height: 170px;
+      padding: 20px 22px;
+      border-radius: 16px 16px 16px 4px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: default;
+    }
+
+    .note:nth-child(odd)  { transform: rotate(-1.5deg); }
+    .note:nth-child(even) { transform: rotate(1.5deg); }
+
+    .note .sender {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .note .preview {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .note .fecha {
+      font-size: 11px;
+      opacity: 0.5;
+      font-family: "Courier New", monospace;
+    }
+
+    /* colores por nota */
+    .note-1 { background: #FFF9C4; color: #5a4a00; }
+    .note-2 { background: #C8F0D8; color: #1a4a2a; }
+    .note-3 { background: #FFD6E0; color: #5a1a2a; }
+    .note-4 { background: #C8E6FF; color: #1a2a5a; }
+    .note-5 { background: #FFE0C8; color: #5a2a1a; }
+    .note-6 { background: #E8D5FF; color: #2a1a5a; }
+
+    /* nota mater — distinta */
+    .note-mater {
+      background: #1a1a1a;
+      color: #33ff33;
+      border-radius: 16px 16px 16px 4px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      transform: rotate(0.5deg);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      font-family: "Courier New", monospace;
+      height: 170px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+    }
+
+    .note-mater:hover {
+      box-shadow: 0 8px 32px rgba(51,255,51,0.2);
+    }
+
+    .note-mater .sender {
+      font-size: 13px;
+      font-weight: bold;
+      color: #888888;
+      letter-spacing: 1px;
+    }
+
+    .note-mater .asunto {
+      font-size: 16px;
+      font-weight: bold;
+      color: #33ff33;
+      letter-spacing: 2px;
+    }
+
+    .note-mater .preview {
+      font-size: 11px;
+      color: #444444;
+      line-height: 1.5;
+    }
+
+    .note-mater .fecha {
+      font-size: 10px;
+      color: #333333;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="card-wrapper">
+
+    <div class="header">
+      <h1>Your Inbox</h1>
+      <button class="btn-new">+</button>
+    </div>
+
+    <div class="grid">
+
+      <div class="note note-1">
+        <div class="sender">Dana</div>
+        <div class="preview">Both parties signed the contract. Filing with the county clerk today.</div>
+        <div class="fecha">hoy · 11:42</div>
+      </div>
+
+     
+
+      <div class="note note-3">
+        <div class="sender">Alan</div>
+        <div class="preview">ENTREGA: Prototipo conceptual / Modelo conceptual.</div>
+        <div class="fecha">ayer · 18:53</div>
+      </div>
+
+      <!-- NOTA MATER.INDEX -->
+      <a class="note-mater" href="loby.html">
+        <div class="sender">x7r3.0-mndx@██████.net</div>
+        <div class="asunto">MATER.INDEX</div>
+        <div class="preview">▓░▒▓░▒▓░▒░▓▒░▓░▒▓░▒▓░▒▓░▒</div>
+        <div class="fecha">██/██/████ · ██:██</div>
+      </a>
+
+      <div class="note note-4">
+        <div class="sender">Priya</div>
+        <div class="preview">Can we push the review to Thursday?</div>
+        <div class="fecha">ayer · 14:30</div>
+      </div>
+
+      <div class="note note-5">
+        <div class="sender">Sam</div>
+        <div class="preview">Final logo files attached, let's talk Monday.</div>
+        <div class="fecha">ayer · 09:05</div>
+      </div>
+
+      <div class="note note-6">
+        <div class="sender">GitHub</div>
+        <div class="preview">3 pull requests waiting on your review.</div>
+        <div class="fecha">hace 2 días · 16:22</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

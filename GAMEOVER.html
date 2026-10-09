@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>SISTEMA INOPERATIVO — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #000000;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Courier New", Courier, monospace;
+      color: #33ff33;
+    }
+
+    /* --- MONITOR SYS --- */
+    #monitor {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 260px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      z-index: 9000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 14px 10px 20px 10px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ff4444;
+      animation: parpadeo-label 0.8s infinite;
+    }
+
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    #integridad-valor {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ff4444;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #1a1a1a;
+      border: 1px solid #333333;
+      display: inline-block;
+    }
+
+    #barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 4px 0 8px 0;
+    }
+
+    .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #log-errores {
+      margin-top: 8px;
+      font-size: 0.78em;
+      color: #ff4444;
+      line-height: 1.8;
+      max-height: 120px;
+      overflow: hidden;
+    }
+
+    /* --- ELEMENTOS VIRÓSICOS --- */
+    .virosico {
+      position: fixed;
+      font-family: "Courier New", Courier, monospace;
+      color: #33ff33;
+      pointer-events: none;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .virosico.rojo { color: #ff4444; }
+    .virosico.blanco { color: #ffffff; }
+    .virosico.tenue { color: #1a4a1a; }
+
+    @keyframes aparecer-virosico {
+      0%   { opacity: 0; transform: skewX(-4deg); }
+      10%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    @keyframes parpadeo-virosico {
+      0%, 100% { opacity: 1; }
+      48% { opacity: 1; }
+      50% { opacity: 0; }
+      52% { opacity: 1; }
+    }
+
+    /* --- BARRA DE TAREAS --- */
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+    /* --- NOTA AUTOR --- */
+    #nota-autor {
+      position: fixed;
+      bottom: 48px;
+      right: 24px;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      padding: 14px 18px;
+      width: 280px;
+      line-height: 1.6;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      z-index: 99999;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #nota-autor.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #nota-autor strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888888;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MONITOR SYS CENTRAL -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label">Integridad del sistema</div>
+      <div id="integridad-valor">0%</div>
+      <div id="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Estado</div>
+      <div style="color:#ff4444; font-size:0.9em; margin-top:4px;">SISTEMA INOPERATIVO</div>
+      <div id="log-errores"></div>
+    </div>
+  </div>
+
+  <!-- BARRA DE TAREAS -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+
+    // TEXTOS VIRÓSICOS
+    var textos = [
+      { texto: "SU BÚSQUEDA HA SIDO REGISTRADA", clase: "rojo", size: "0.9em" },
+      { texto: "SU BÚSQUEDA HA SIDO REGISTRADA", clase: "tenue", size: "0.75em" },
+      { texto: "SU BÚSQUEDA HA SIDO REGISTRADA", clase: "tenue", size: "0.65em" },
+      { texto: "PROCESO 0017 madre.exe EN EJECUCIÓN", clase: "rojo", size: "0.85em" },
+      { texto: "PROCESO 0017 madre.exe EN EJECUCIÓN", clase: "tenue", size: "0.7em" },
+      { texto: "SU IDENTIDAD HA SIDO TRANSFERIDA", clase: "blanco", size: "1.1em" },
+      { texto: "ABEL BLANCO: PRESENTE", clase: "blanco", size: "1em" },
+      { texto: "ABEL BLANCO: PRESENTE", clase: "tenue", size: "0.7em" },
+      { texto: "-34.6083° -58.3731°", clase: "tenue", size: "0.75em" },
+      { texto: "-34.6112° -58.3698°", clase: "tenue", size: "0.65em" },
+      { texto: "RAMAL SUR · NIVEL −7", clase: "rojo", size: "0.9em" },
+      { texto: "LA VICTORIA DEL PROLETARIADO SE EXTIENDE MÁS ALLÁ DEL ESPACIO Y EL TIEMPO", clase: "tenue", size: "0.65em" },
+      { texto: "LA VICTORIA DEL PROLETARIADO SE EXTIENDE MÁS ALLÁ DEL ESPACIO Y EL TIEMPO", clase: "tenue", size: "0.6em" },
+      { texto: "F.E.O.S. · FUNDADA 15/02/1983", clase: "tenue", size: "0.7em" },
+      { texto: "FLORENCIO SCHMIT: PRESENTE", clase: "rojo", size: "0.9em" },
+      { texto: "INTEGRIDAD COMPROMETIDA", clase: "rojo", size: "0.8em" },
+      { texto: "INTEGRIDAD COMPROMETIDA", clase: "tenue", size: "0.65em" },
+      { texto: "NO INDEXAR", clase: "tenue", size: "0.7em" },
+      { texto: "NO INDEXAR", clase: "tenue", size: "0.6em" },
+      { texto: "NO INDEXAR", clase: "tenue", size: "0.55em" },
+      { texto: "madre.exe · v0.9.3 · ACTIVO", clase: "rojo", size: "0.75em" },
+      { texto: "▓░▒▓░▒▓░▒░▓▒░▓░▒▓", clase: "rojo", size: "1.2em" },
+      { texto: "▓░▒▓░▒▓░▒░▓▒░▓░▒▓", clase: "tenue", size: "0.8em" },
+    ];
+
+    var logMensajes = [
+      "> ERROR 0x0000MADRE",
+      "> proceso no autorizado detectado",
+      "> intentando recuperar integridad...",
+      "> FALLO",
+      "> conexión con ramal sur: ACTIVA",
+      "> transfiriendo identidad...",
+      "> TRANSFERENCIA COMPLETA",
+      "> sistema inoperativo",
+    ];
+
+    // POBLAR LOG DE ERRORES
+    var log = document.getElementById('log-errores');
+    var logIndex = 0;
+
+    function agregarLog() {
+      if (logIndex < logMensajes.length) {
+        log.innerHTML += logMensajes[logIndex] + '<br>';
+        logIndex++;
+        setTimeout(agregarLog, 600);
+      }
+    }
+
+    setTimeout(agregarLog, 500);
+
+    // ESPARCIR TEXTOS VIRÓSICOS
+    function posicionAleatoria() {
+      return {
+        x: Math.random() * (window.innerWidth - 400),
+        y: Math.random() * (window.innerHeight - 60)
+      };
+    }
+
+    function crearVirosico(datos, delay) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'virosico ' + datos.clase;
+        el.style.fontSize = datos.size;
+        el.textContent = datos.texto;
+        var pos = posicionAleatoria();
+        el.style.left = pos.x + 'px';
+        el.style.top = pos.y + 'px';
+
+        var duracion = 4000 + Math.random() * 8000;
+        el.style.animation = 'aparecer-virosico ' + (duracion/1000) + 's forwards';
+
+        document.body.appendChild(el);
+
+        // Algunos parpadean
+        if (Math.random() > 0.6) {
+          setTimeout(function() {
+            el.style.animation = 'parpadeo-virosico 0.4s infinite';
+            el.style.opacity = '1';
+          }, duracion * 0.3);
+        }
+
+        // Reaparecer en nueva posición
+        setTimeout(function() {
+          var nuevaPos = posicionAleatoria();
+          el.style.left = nuevaPos.x + 'px';
+          el.style.top = nuevaPos.y + 'px';
+          el.style.animation = 'aparecer-virosico ' + (duracion/1000) + 's forwards';
+        }, duracion + 500);
+
+      }, delay);
+    }
+
+    // LANZAR TODOS LOS VIRÓSICOS
+    textos.forEach(function(t, i) {
+      crearVirosico(t, 800 + i * 180);
+    });
+
+    // RELOJ
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    // CTRL+R — RESET
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    setTimeout(function() {
+      document.getElementById('nota-autor').classList.add('visible');
+    }, 7000);
+  </script>
+
+  <div id="nota-autor">
+    <strong>Modelo representativo completado</strong>
+    Pulse Ctrl+R para reiniciar el modelo.
+  </div>
+
+  </body>
+</html>

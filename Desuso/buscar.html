@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Búsqueda — Sepulcrum.index</title>
+  <style>
+@font-face {
+      font-family: "Redaction";
+      src: url("fonts/Redaction-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction10";
+      src: url("fonts/Redaction10-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction20";
+      src: url("fonts/Redaction20-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction35";
+      src: url("fonts/Redaction35-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction50";
+      src: url("fonts/Redaction50-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction70";
+      src: url("fonts/Redaction70-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction100";
+      src: url("fonts/Redaction100-Regular.otf") format("opentype");
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f8f5e6;
+      color: #1a1a1a;
+      font-family: "Redaction" "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #esqueleto {
+      display: flex;
+      align-items: stretch;
+      min-height: 100vh;
+    }
+
+    /* --- COLUMNA IZQUIERDA --- */
+    #barra-izquierda {
+      width: 220px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      border-right: 1px solid #cccccc;
+      padding: 16px 14px;
+      font-size: 0.82em;
+      line-height: 1.6;
+    }
+
+    #barra-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 0 16px 0;
+    }
+
+    #barra-izquierda h3 {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555555;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    #barra-izquierda p {
+      margin-bottom: 12px;
+      color: #444444;
+    }
+
+    /* --- COLUMNA PRINCIPAL --- */
+    #columna-principal {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- ENCABEZADO --- */
+    #encabezado {
+      background-color: #f8f5e6;
+      padding: 12px 16px 0px 16px;
+    }
+
+    #encabezado h1 {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #b06fdb;
+    }
+
+    #navegacion {
+      border-top: 1px solid #cccccc;
+      padding: 6px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    #navegacion a {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.82em;
+      color: #1a1a1a;
+      text-decoration: none;
+      padding: 2px 4px;
+    }
+
+    #navegacion a:hover {
+      color: #777777;
+    }
+
+    /* --- CONTENIDO --- */
+    #contenedor {
+      flex: 1;
+      padding: 24px 32px;
+      min-width: 0;
+    }
+
+    #contenedor h1 {
+      font-size: 2.4em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    /* --- SECCIÓN TÍTULOS --- */
+    .seccion-titulo {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #555555;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+    }
+
+    #grilla-titulos {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 40px;
+    }
+
+    #grilla-titulos a {
+      color: #0645ad;
+      font-size: 1em;
+      text-decoration: underline;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    #grilla-titulos a:visited {
+      color: #551a8b;
+    }
+
+    #grilla-titulos a:hover {
+      color: #0000ff;
+    }
+
+    /* --- SECCIÓN IMÁGENES --- */
+    #grilla-imagenes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    #grilla-imagenes img {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border: 1px solid #aaaaaa;
+      display: block;
+    }
+
+    #grilla-imagenes img:hover {
+      border-color: #0645ad;
+      cursor: pointer;
+    }
+
+    /* --- CATEGORÍAS --- */
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #categorias a {
+      color: #0645ad;
+    }
+
+    /* --- COLUMNA DERECHA --- */
+    #barra-derecha {
+      width: 220px;
+      flex-shrink: 0;
+      background-color: #0a0a0a;
+      color: #33ff33;
+      padding: 16px 14px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.8em;
+    }
+
+    #barra-derecha .dato-sistema {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222222;
+    }
+
+    #barra-derecha .dato-sistema strong {
+      display: block;
+      color: #888888;
+      font-size: 0.85em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    #barra-derecha .alerta {
+      color: #ff4444;
+    }
+
+  </style>
+  
+</head>
+<body>
+
+  <div id="esqueleto">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <div id="barra-izquierda">
+      <img src="imagenes/logo1.png" alt="Sepulcrum.index" class="logo">
+      <h3>Herramientas</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+
+    <!-- COLUMNA PRINCIPAL -->
+    <div id="columna-principal">
+
+      <div id="encabezado">
+        <h1>Sepulcrum.index</h1>
+        <div id="navegacion">
+          <a href="loby.html">[ INICIO ]</a>
+          <a href="#">[ ÍNDICE ]</a>
+          <a href="#">[ AZAR ]</a>
+          <a href="#">[ ANILLO WEB ]</a>
+          <a href="#">[ ACERCA ]</a>
+        </div>
+      </div>
+
+      <div id="contenedor">
+
+        <h1>Resultados de búsqueda</h1>
+        <div class="advertencia-articulo">
+          ⚠ Este artículo está siendo modificado en este momento.
+        </div>
+
+        <!-- TÍTULOS -->
+        <div class="seccion-titulo">Expedientes encontrados</div>
+        <div id="grilla-titulos">
+          <a href="#">Museo Apolítico De La Victoria Y La Derrota</a>
+          <a href="cloacazo.html">El Cloacazo</a>
+          <a href="feos.html">F.E.O.S.</a>
+          <a href="#">Florencio Schmit</a>
+          <a href="abel_blanco.html">Abel Blanco</a>
+          <a href="#">K¾</a>
+          <a href="#">Sol Argentino Rodriguez</a>
+          <a href="#">new logic</a>
+          <a href="#">Alegre viajero</a>
+          <a href="#">karen marcelo</a>
+          <a href="#">Campamento oferta y demanda</a>
+          <a href="#">Ibuprofano</a>
+          <a href="#">Moonwashing</a>
+          <a href="#">Drácula GNC</a>
+        </div>
+
+        <!-- IMÁGENES -->
+        <div class="seccion-titulo">Archivos visuales</div>
+        <div id="grilla-imagenes">
+          <img src="imagenes/articulos/divisa.punso.png" alt="archivo visual">
+          <img src="imagenes/articulos/FV2.png" alt="archivo visual">
+          <img src="imagenes/articulos/IMG_4143.JPG" alt="archivo visual">
+          <img src="imagenes/articulos/jup.png" alt="archivo visual">
+          <img src="imagenes/articulos/merecbi.png" alt="archivo visual">
+          <img src="imagenes/articulos/pingpong6.png" alt="archivo visual">
+          <img src="imagenes/articulos/pingpong7.png" alt="archivo visual">
+          <img src="imagenes/articulos/rosas2.png" alt="archivo visual">
+          <img src="imagenes/articulos/SEBITA4.png" alt="archivo visual">
+          <img src="imagenes/articulos/Tikun_Olam.png" alt="archivo visual">
+          <img src="imagenes/articulos/Una_humilde_plegaria_a_la_diversion.png" alt="archivo visual">
+          <img src="imagenes/articulos/zolp3.png" alt="archivo visual">
+        </div>
+
+        <!-- CATEGORÍAS -->
+        <div id="categorias">
+          Categorías: <a href="#">Índice</a> · <a href="#">Búsqueda</a> ·
+          <a href="#">Contenido no verificado</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <div id="barra-derecha">
+      <div class="dato-sistema">
+        <strong>Profundidad</strong>
+        −1 niveles
+      </div>
+      <div class="dato-sistema">
+        <strong>Antorcha</strong>
+        ▮▮▮▯▯
+      </div>
+      <div class="dato-sistema alerta">
+        <strong>Integridad del sistema</strong>
+        <span>68%</span><br>
+        ▲ <span>2</span> procesos no identificados
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

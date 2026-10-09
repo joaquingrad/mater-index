@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>F.E.O.S. — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+        #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+      display: none;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      font-size: 7px;
+      text-align: center;
+      line-height: 8px;
+      color: #333333;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    .redactado {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+    }
+
+    .texto-corrupto {
+      display: inline;
+      font-family: "Redaction100", serif;
+      animation: glitch-texto 1.8s infinite;
+    }
+
+    @keyframes glitch-texto {
+      0%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      5%   { opacity: 0.3; transform: skewX(-8deg);  letter-spacing: -4px; }
+      6%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      45%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      46%  { opacity: 0.2; transform: skewX(4deg);   letter-spacing: 6px; }
+      47%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      100% { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+    }
+
+    #infobox {
+      float: right;
+      width: 240px;
+      margin: 0 0 16px 16px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.82em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox table { width: 100%; border-collapse: collapse; }
+
+    #infobox td {
+      padding: 4px 8px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 40%;
+      color: #444444;
+    }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+    }
+
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background-color: #f0f0f0;
+      border: 2px solid #333333;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      box-shadow: 4px 4px 0px #000000;
+      z-index: 999;
+    }
+
+    #popup .popup-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #popup .popup-cerrar {
+      cursor: pointer;
+      background: #cc0000;
+      color: white;
+      border: none;
+      padding: 0 6px;
+      font-family: "Courier New", monospace;
+    }
+
+    #popup .popup-cerrar:hover { background: #ff0000; }
+
+    #popup .popup-cuerpo {
+      padding: 14px 12px;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    #popup .popup-alerta {
+      color: #cc0000;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    #popup .popup-boton {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 0 12px 12px 12px;
+      padding: 6px;
+      background-color: #d4d0c8;
+      border: 2px solid #333333;
+      font-family: "Courier New", monospace;
+      font-size: 0.9em;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #popup .popup-boton:hover { background-color: #bbb8b0; }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MONITOR SYS FLOTANTE -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana">_</span>
+      <span class="boton-ventana">□</span>
+      <span class="boton-ventana">×</span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−2 niveles</div>
+    </div>
+  </div>
+
+  <!-- POPUP -->
+  <div id="popup">
+    <div class="popup-barra">
+      <span>aviso_del_sistema.exe</span>
+      <button class="popup-cerrar" onclick="cerrarPopup()">×</button>
+    </div>
+    <div class="popup-cuerpo">
+      <div class="popup-alerta">¿quién ▓▒░▓░▒ sos?</div>
+      Un agente solicita acceso a su cámara. ¿Permitir?
+    </div>
+    <button class="popup-boton" onclick="permitirAcceso()">Permitir</button>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+
+      <div id="columna-izquierda">
+        <img src="imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>F.E.O.S.</h1>
+          <div class="advertencia-articulo">
+            ⚠ Este artículo está siendo modificado en este momento.
+          </div>
+
+          <div id="infobox">
+            <div class="infobox-titulo">F.E.O.S.</div>
+            <img src="imagenes/feos.png" alt="F.E.O.S." style="width:100%; height:auto; display:block;">
+            <table>
+              <tr><td>Tipo</td><td>Federación gremial</td></tr>
+              <tr><td>Ámbito</td><td>Red subterránea</td></tr>
+              <tr><td>Estado</td><td>Activo</td></tr>
+              <tr><td>Fundación</td><td>15 de febrero de 1983</td></tr>
+            </table>
+          </div>
+
+          <p>
+            La <strong>Federación de Obreros y Especialistas Subterráneos</strong> (F.E.O.S.)
+            es la agrupación gremial que reúne a los trabajadores del
+            <a href="404.html">Subterráneo de Buenos Aires</a>
+            con los trabajadores de Obras Sanitarias de la Nación Argentina.
+          </p>
+
+          <h2>Orígenes</h2>
+          <p>
+            F.E.O.S. nació el 15 de febrero de 1983 en una resolución de la famosa asamblea
+            extraordinaria del alcantarillado porteño que tuvo lugar tras la aparición del
+            cuerpo sin vida de <a href="abel_blanco.html">Abel Blanco</a>.
+            Conocida como <strong><a href="cloacazo.html">El Cloacazo</a></strong>,
+            la asamblea <span class="texto-corrupto">▓░▒▓░▒▓░▒░▓▒░▓░▒▓</span>
+          </p>
+
+          <h2><span class="redactado">██████████████████████████████████████████████████████████████████████████████████████</span></h2>
+          <p>
+            <span class="redactado">███████████████████████████████████████████████████████████</span>
+            <span class="redactado">█████████████████████████████████████████████████████████████████████████████████████████████</span>
+          </p>
+          <h2><span class="redactado">██████████████████████████████████████████████████████████████████████████████████████</span></h2>
+          <p>
+            <span class="redactado">███████████████████████████████████████████████████████████</span>
+          </p>
+
+          <div id="categorias">
+            Categorías: Organizaciones · Niveles −1 a −4 · Contenido parcial · NO INDEXAR
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+
+    </div>
+
+  </div>
+
+  <!-- BARRA DE TAREAS -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+      <div class="task-btn" id="task-sys" style="display:none;">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        localStorage.setItem('paginaAnterior', window.location.href);
+    actualizarMonitor(integridad);
+    if (integridad <= 0) {
+      window.location.href = 'gameover.html';
+    }
+
+    document.getElementById('popup').style.display = 'none';
+    setTimeout(function() {
+      document.getElementById('popup').style.display = 'block';
+    }, 4000);
+
+    function cerrarPopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+
+    function permitirAcceso() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          stream.getTracks().forEach(function(track) { track.stop(); });
+        })
+        .catch(function() {});
+
+      localStorage.setItem('camaraPermitida', 'true');
+            recibirDano(20);
+
+      setTimeout(function() {
+        document.getElementById('popup').style.display = 'none';
+        if (integridad <= 0) {
+          window.location.href = 'gameover.html';
+        }
+      }, 400);
+    }
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    var variantesGlitch = ["Redaction10", "Redaction50", "Redaction100", "Redaction20", "Redaction35"];
+    document.querySelectorAll('.texto-corrupto').forEach(function(el) {
+      el.addEventListener('animationiteration', function() {
+        var i = 0;
+        var intervalo = setInterval(function() {
+          el.style.fontFamily = variantesGlitch[i % variantesGlitch.length];
+          i++;
+        }, 120);
+        setTimeout(function() {
+          clearInterval(intervalo);
+          el.style.fontFamily = "Redaction100";
+        }, 600);
+      });
+    });
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // BOOTEO DE SYS
+    setTimeout(function() {
+      var taskSys = document.getElementById('task-sys');
+      taskSys.style.display = 'flex';
+      taskSys.style.color = '#cc0000';
+      setTimeout(function() {
+        taskSys.style.color = '';
+        document.getElementById('monitor').style.display = 'block';
+      }, 1000);
+    }, 2000);
+        // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+      // FUNCIÓN DE DAÑO
+    var audioCtx = null;
+    document.addEventListener('click', function() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    });
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      // SONIDO DE ERROR
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // PARPADEO ROJO DEL LABEL
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      // CUENTA REGRESIVA
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
+  </script>
+
+</body>
+</html>

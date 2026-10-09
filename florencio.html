@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Florencio Schmit — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+      font-family: "Redaction70", serif;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    .redactado {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+    }
+
+    #infobox {
+      float: right;
+      width: 240px;
+      margin: 0 0 16px 16px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.82em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox table { width: 100%; border-collapse: collapse; }
+
+    #infobox td {
+      padding: 4px 8px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 40%;
+      color: #444444;
+    }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+    }
+
+    .popup-espiral {
+      position: fixed;
+      background-color: #e8e8e8;
+      border: 2px solid #1a1a1a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.82em;
+      box-shadow: 6px 6px 0px #000000;
+      color: #1a1a1a;
+      cursor: default;
+      user-select: none;
+    }
+
+    .popup-espiral .popup-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .popup-espiral .popup-cerrar {
+      cursor: pointer;
+      background: #880000;
+      color: white;
+      border: none;
+      padding: 0 6px;
+      font-family: "Courier New", monospace;
+    }
+
+    .popup-espiral .popup-cuerpo {
+      padding: 10px 12px;
+      line-height: 1.5;
+    }
+
+    .popup-espiral .popup-alerta {
+      color: #880000;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .popup-espiral .popup-boton {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 0 12px 10px 12px;
+      padding: 5px;
+      background-color: #cccccc;
+      border: 2px solid #1a1a1a;
+      font-family: "Courier New", monospace;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .popup-espiral .popup-boton:hover { background-color: #aaaaaa; }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+         <div class="label">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−5 niveles</div>
+    </div>
+  </div>
+
+  <div id="popup-container"></div>
+
+  <div id="ventana">
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+
+      <div id="columna-izquierda">
+        <img src="imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Florencio Schmit</h1>
+          <div class="advertencia-articulo">
+            ⚠ Acceso a este expediente ha sido restringido.
+          </div>
+
+          <div id="infobox">
+            <div class="infobox-titulo">Florencio Schmit (El Feo)</div>
+            <div style="background:#1a1a1a; color:#33ff33; font-family:'Courier New',monospace; font-size:0.85em; padding:10px; text-align:center;">
+              IMAGEN CLASIFICADA<br>██████████████████
+            </div>
+            <table>
+              <tr><td>Alias</td><td>El Feo</td></tr>
+              <tr><td>Cargo</td><td>Secretario General · F.E.O.S.</td></tr>
+              <tr><td>Facción</td><td><span class="redactado">█████████</span></td></tr>
+              <tr><td>Estado</td><td><span class="redactado">████████</span></td></tr>
+              <tr><td>Afiliación</td><td><a href="feos.html">F.E.O.S.</a></td></tr>
+            </table>
+          </div>
+
+          
+      
+          <p>
+                      <p>
+            Florencio Schmit (<a href="404.html">Asunción</a>, Paraguay, 4 de noviembre de 1945 – <span class="redactado">██████████████████</span>) fue un trabajador del sistema de alcantarillado de la Ciudad Autónoma de Buenos Aires y dirigente sindical que se desempeñó como Secretario General de la <a href="feos.html">Federación de Obreros y Especialistas Subterráneos</a> (F.E.O.S.) entre <span class="redactado">████████</span> y <span class="redactado">████████</span>. Conocido en el ámbito gremial bajo el alias <strong>El Feo</strong>, lideró una facción interna orientación ideológica <span class="redactado">████████████████████████████████████████</span>. 
+          </p>
+          </p>
+
+          <h2>Primeros años</h2>
+          <p>
+           <span class="redactado">█████████████████████████████████████████████████████████████████</span>
+          </p>
+           <h2>Rumores vinculados a su paradero actual.</h2>
+          <p>
+          Diversos testimonios atestiguan reconocer a Florencio Schmit alias "el feo" habitando las instalaciones abandonadas del <a href="museo.html">MAVYD</a>. 
+          Si bien esta información nunca fue confirmada, los avistamientos de “El feo” alcanzaron un estatus de mito urbano dentro de la cultura porteña.
+          </p>
+
+          <div id="categorias">
+            Categorías: Personas · Niveles −5 a −7 · Expediente clasificado · NO INDEXAR
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+
+    </div>
+  </div>
+
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        localStorage.setItem('paginaAnterior', window.location.href);
+    actualizarMonitor(integridad);
+    if (integridad <= 0) window.location.href = 'gameover.html';
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    var totalPopups = 80;
+    var container = document.getElementById('popup-container');
+    var popupsCerrados = 0;
+    var spamMostrado = false;
+
+    function posicionEspiral(i, total) {
+      var angulo = (i / total) * 2 * Math.PI * 3;
+      var radio = 20 + i * 4;
+      var centroX = window.innerWidth / 2;
+      var centroY = window.innerHeight / 2;
+      var x = centroX + radio * Math.cos(angulo) - 140;
+      var y = centroY + radio * Math.sin(angulo) - 80;
+      x = Math.max(10, Math.min(x, window.innerWidth - 300));
+      y = Math.max(10, Math.min(y, window.innerHeight - 200));
+      return { x: x, y: y };
+    }
+
+    function cerrarPopupEspiral(btn) {
+      var el = btn;
+      while (el && !el.classList.contains('popup-espiral')) {
+        el = el.parentNode;
+      }
+      if (!el) return;
+      var left = el.style.left;
+      var top = el.style.top;
+      document.querySelectorAll('.popup-espiral').forEach(function(p) {
+        if (p.style.left === left && p.style.top === top) {
+          p.style.display = 'none';
+          p.style.pointerEvents = 'none';
+        }
+      });
+      popupsCerrados++;
+      if (popupsCerrados === 3 && !spamMostrado) {
+        spamMostrado = true;
+        setTimeout(mostrarPopupSpam, 400);
+      }
+    }
+
+    function lanzarEspiral() {
+      for (var i = 0; i < totalPopups; i++) {
+        (function(index) {
+          setTimeout(function() {
+            var pos = posicionEspiral(index, totalPopups);
+            var popup = document.createElement('div');
+            popup.className = 'popup-espiral';
+            popup.style.cssText =
+              'position:fixed;' +
+              'left:' + pos.x + 'px;' +
+              'top:' + pos.y + 'px;' +
+              'width:260px;' +
+              'z-index:' + (900 + index) + ';';
+            popup.innerHTML =
+              '<div class="popup-barra">' +
+              '<span>acceso_restringido.exe</span>' +
+              '<button class="popup-cerrar" onclick="cerrarPopupEspiral(this);return false;">×</button>' +
+              '</div>' +
+              '<div class="popup-cuerpo">' +
+              '<div class="popup-alerta">⚠ Expediente clasificado</div>' +
+              'Este archivo ha sido marcado para restricción permanente.' +
+              '</div>' +
+              '<button class="popup-boton" onclick="cerrarPopupEspiral(this);return false;">Cerrar</button>';
+            container.appendChild(popup);
+          }, index * 30);
+        })(i);
+      }
+    }
+
+    function mostrarPopupSpam() {
+      var spam = document.createElement('div');
+      spam.id = 'popup-spam';
+      spam.style.cssText =
+        'position:fixed;' +
+        'top:50%;left:50%;' +
+        'transform:translate(-50%,-50%);' +
+        'width:320px;' +
+        'z-index:9500;' +
+        'background:#c0c0c0;' +
+        'border-top:2px solid #ffffff;' +
+        'border-left:2px solid #ffffff;' +
+        'border-right:2px solid #555555;' +
+        'border-bottom:2px solid #555555;' +
+        'font-family:"Courier New",monospace;' +
+        'font-size:0.85em;' +
+        'box-shadow:4px 4px 0px #000000;';
+      spam.innerHTML =
+        '<div style="background:linear-gradient(to right,#0a0ac9,#1084d0);color:#fff;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;">' +
+        '<span>Asistente del sistema</span>' +
+        '<button onclick="cerrarSpam()" style="background:#cc0000;color:#fff;border:none;padding:0 6px;cursor:pointer;font-family:\'Courier New\',monospace;">×</button>' +
+        '</div>' +
+        '<div style="padding:16px 14px;background:#c0c0c0;">' +
+        '<div style="display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="font-size:2.5em;line-height:1;">⚠</div>' +
+        '<div>' +
+        '<div style="font-weight:bold;margin-bottom:8px;">¿Mucho spam?</div>' +
+        'Se han detectado 77 procesos no autorizados en este expediente.<br><br>' +
+        'Un agente puede limpiar estos procesos por usted.' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div style="background:#c0c0c0;padding:8px 14px;display:flex;justify-content:flex-end;gap:6px;border-top:1px solid #aaaaaa;">' +
+        '<button id="btn-permitir-spam" style="background:#c0c0c0;border-top:2px solid #ffffff;border-left:2px solid #ffffff;border-right:2px solid #555555;border-bottom:2px solid #555555;padding:4px 16px;font-family:\'Courier New\',monospace;cursor:pointer;">Permitir</button>' +
+        '<button onclick="cerrarSpam()" style="background:#c0c0c0;border-top:2px solid #ffffff;border-left:2px solid #ffffff;border-right:2px solid #555555;border-bottom:2px solid #555555;padding:4px 16px;font-family:\'Courier New\',monospace;cursor:pointer;">Cancelar</button>' +
+        '</div>';
+      document.body.appendChild(spam);
+      document.getElementById('btn-permitir-spam').addEventListener('click', permitirSpam);
+    }
+
+    function cerrarSpam() {
+      var spam = document.getElementById('popup-spam');
+      if (spam) spam.remove();
+    }
+
+    function permitirSpam() {
+      cerrarSpam();
+      document.querySelectorAll('.popup-espiral').forEach(function(p) {
+        p.style.display = 'none';
+        p.style.pointerEvents = 'none';
+      });
+            recibirDano(20);
+      if (integridad <= 0) {
+        setTimeout(function() {
+          window.location.href = 'gameover.html';
+        }, 800);
+      }
+    }
+
+    setTimeout(lanzarEspiral, 2000);
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+     // FUNCIÓN DE DAÑO
+    var audioCtx = null;
+    document.addEventListener('click', function() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    });
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      // SONIDO DE ERROR
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // PARPADEO ROJO DEL LABEL
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      // CUENTA REGRESIVA
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
+ </script>
+
+</body>
+</html>

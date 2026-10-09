@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Inbox</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e8e8e8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .card {
+      width: min(1100px, 95vw);
+      height: 90vh;
+      background: #F0FBF6;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      display: flex;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #e8e8e8;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      font-weight: bold;
+      color: #134E3A;
+      margin-bottom: 16px;
+    }
+
+    .conv-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .conv-row:hover { background: #F0FBF6; }
+    .conv-row.activo { background: #F0FBF6; }
+    .conv-row.oculto { display: none; }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .conv-nombre { font-size: 14px; font-weight: 500; }
+    .conv-row.activo .conv-nombre { color: #134E3A; }
+    .conv-row:not(.activo) .conv-nombre { color: #888888; }
+
+    .conv-preview {
+      font-size: 12px;
+      color: #aaaaaa;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+
+    .conv-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .conv-panel {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .conv-panel.activo { display: flex; }
+
+    .panel-header {
+      background: #ffffff;
+      padding: 20px 32px;
+      border-bottom: 1px solid #e8e8e8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .punto-verde {
+      width: 10px;
+      height: 10px;
+      background: #22B07D;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .punto-verde.rojo {
+      background: #cc0000;
+      animation: pulso 1s infinite;
+    }
+
+    @keyframes pulso {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .panel-nombre {
+      font-size: 18px;
+      font-weight: bold;
+      color: #134E3A;
+    }
+
+    .panel-nombre.anonimo {
+      color: #cc0000;
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+    }
+
+    .mensajes {
+      flex: 1;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .burbuja-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .avatar-chat {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .burbuja {
+      max-width: min(480px, 60%);
+      padding: 14px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .burbuja.recibido {
+      background: #ffffff;
+      border-radius: 4px 18px 18px 18px;
+      color: #1a1a1a;
+    }
+
+    .burbuja.anonimo {
+      background: #1a1a1a;
+      border-radius: 4px 18px 18px 18px;
+      color: #33ff33;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .pista {
+      color: #666666;
+      font-size: 11px;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="sidebar">
+    <h2>Conversations</h2>
+
+    <div class="conv-row activo" onclick="mostrarConv('univ')" id="tab-univ">
+      <div class="avatar" style="background:#A0C4FF;">P</div>
+      <div class="conv-info">
+        <div class="conv-nombre">PosgradoFSOC</div>
+        <div class="conv-preview">Recordatorio de entrega</div>
+      </div>
+    </div>
+
+    <div class="conv-row" onclick="mostrarConv('docente')" id="tab-docente">
+      <div class="avatar" style="background:#FFD6A5; color:#5a3a00;">D</div>
+      <div class="conv-info">
+        <div class="conv-nombre">Dr. Ferreyra</div>
+        <div class="conv-preview">Nombres sin registro</div>
+      </div>
+    </div>
+
+    <div class="conv-row" onclick="mostrarConv('psiquiatra')" id="tab-psiquiatra">
+      <div class="avatar" style="background:#FFB4A2; color:#5a1a1a;">H</div>
+      <div class="conv-info">
+        <div class="conv-nombre">Dra. Has</div>
+        <div class="conv-preview">Seguimiento y receta</div>
+      </div>
+    </div>
+
+    <div class="conv-row oculto" onclick="mostrarConv('mater')" id="tab-mater">
+      <div class="avatar" style="background:#1a1a1a; color:#33ff33; font-family:'Courier New',monospace;">?</div>
+      <div class="conv-info">
+        <div class="conv-nombre" style="color:#cc0000; font-family:'Courier New',monospace;">x7r3.0-mndx</div>
+        <div class="conv-preview" style="color:#cc0000;">mater.index</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <!-- POSGRADO FSOC -->
+    <div class="conv-panel activo" id="conv-univ">
+      <div class="panel-header">
+        <div class="punto-verde"></div>
+        <div class="panel-nombre">PosgradoFSOC</div>
+      </div>
+      <div class="mensajes">
+        <div class="burbuja-wrap">
+          <div class="avatar-chat" style="background:#A0C4FF;">P</div>
+          <div class="burbuja recibido">
+            Estimado/a, le recordamos que la <strong>fecha límite</strong> para la entrega del borrador final de su tesis de investigación es el 30 de agosto, es decir en <strong>5 días</strong>.<br><br>
+            Su trabajo sobre la historia del movimiento obrero en la Argentina se encuentra aún pendiente de aprobación oficial. Por favor asegúrese de recibir la aprobación del Dr. Ferreyra con respecto al índice oficial.<br><br>
+            Ante cualquier consulta, comuníquese por este medio.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DR. FERREYRA -->
+    <div class="conv-panel" id="conv-docente">
+      <div class="panel-header">
+        <div class="punto-verde"></div>
+        <div class="panel-nombre">Dr. Ferreyra</div>
+      </div>
+      <div class="mensajes">
+        <div class="burbuja-wrap">
+          <div class="avatar-chat" style="background:#FFD6A5; color:#5a3a00;">D</div>
+          <div class="burbuja recibido">
+            ¡Buenas tardes! Estuve revisando el material que mandaste. Es realmente llamativo. Estos dos nombres aparecen en varias cartas y memorias de militantes del período, pero no figuran en ningún padrón, ninguna ficha o documento. Como si no hubieran existido.<br><br>
+            Si vas a centrar tu investigación en estas memorias es fundamental encontrarlos. Tenés que averiguar qué fue de <strong>Abel Blanco</strong> y <strong>Florencio Schmit</strong>.<br><br>
+            ¿Podemos juntarnos esta semana? Tengo el jueves a las 15hs. Saludos.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRA. HAS -->
+    <div class="conv-panel" id="conv-psiquiatra">
+      <div class="panel-header">
+        <div class="punto-verde"></div>
+        <div class="panel-nombre">Dra. Has</div>
+      </div>
+      <div class="mensajes">
+        <div class="burbuja-wrap">
+          <div class="avatar-chat" style="background:#FFB4A2; color:#5a1a1a;">H</div>
+          <div class="burbuja recibido">
+            Hola, te dejo adjunta la receta del zolpidem. Recordá tomarlo solo si los sueños vuelven a interrumpir el descanso.<br><br>
+            ¿Cómo vienen los sueños? En la última sesión mencionaste que la sensación de estar en ese alcantarillado era muy vívida. 
+            ¿Sigue siendo así?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATER.INDEX -->
+    <div class="conv-panel" id="conv-mater">
+      <div class="panel-header">
+        <div class="punto-verde rojo"></div>
+        <div class="panel-nombre anonimo">x7r3.0-mndx@██████.net</div>
+      </div>
+      <div class="mensajes">
+        <div class="burbuja-wrap">
+          <div class="avatar-chat" style="background:#1a1a1a; color:#33ff33; font-family:'Courier New',monospace;">?</div>
+          <div class="burbuja anonimo">
+            mater.index<br><br>
+            ▓░▒▓░▒▓░▒░▓▒░▓░▒▓<br><br>
+            <a href="loby.html" style="color:#33ff33;">http://mater.index/acceso</a>
+            <div class="pista">"me hallaba yo en una selva oscura"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  var vistos = { univ: true, docente: false, psiquiatra: false };
+  var materAparecio = false;
+
+  function mostrarConv(id) {
+    document.querySelectorAll('.conv-panel').forEach(function(d) {
+      d.classList.remove('activo');
+    });
+    document.querySelectorAll('.conv-row').forEach(function(r) {
+      r.classList.remove('activo');
+    });
+
+    var panel = document.getElementById('conv-' + id);
+    if (panel) panel.classList.add('activo');
+
+    var tab = document.getElementById('tab-' + id);
+    if (tab) tab.classList.add('activo');
+
+    if (vistos.hasOwnProperty(id)) {
+      vistos[id] = true;
+    }
+
+    if (vistos.univ && vistos.docente && vistos.psiquiatra && !materAparecio) {
+      materAparecio = true;
+      setTimeout(aparecerMater, 3000);
+    }
+  }
+
+  function aparecerMater() {
+    var tab = document.getElementById('tab-mater');
+    var nombre = tab.querySelector('.conv-nombre');
+    var preview = tab.querySelector('.conv-preview');
+    var textoFinal = 'x7r3.0-mndx';
+    var i = 0;
+
+    tab.classList.remove('oculto');
+    nombre.textContent = '';
+    preview.style.opacity = '0';
+
+    var parpadeos = 0;
+    var intervaloParpadeo = setInterval(function() {
+      tab.style.opacity = tab.style.opacity === '0' ? '1' : '0';
+      parpadeos++;
+      if (parpadeos >= 8) {
+        clearInterval(intervaloParpadeo);
+        tab.style.opacity = '1';
+
+        var intervaloEscritura = setInterval(function() {
+          nombre.textContent += textoFinal[i];
+          i++;
+          if (i >= textoFinal.length) {
+            clearInterval(intervaloEscritura);
+            setTimeout(function() {
+              preview.style.transition = 'opacity 0.4s';
+              preview.style.opacity = '1';
+            }, 300);
+          }
+        }, 80);
+      }
+    }, 80);
+  }
+      // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+</script>
+
+</body>
+</html>

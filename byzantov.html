@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Sergei Konstantínovich Byzantov — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      font-size: 7px;
+      text-align: center;
+      line-height: 8px;
+      color: #333333;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    .redactado {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+    }
+
+    #dato-oculto {
+      background-color: #3b1a0a;
+      color: #3b1a0a;
+      font-family: "Redaction100", serif;
+      user-select: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #dato-oculto.revelado {
+      background-color: transparent;
+      color: #1a1a1a;
+      font-family: "Redaction", serif;
+    }
+
+    #infobox {
+      float: right;
+      width: 240px;
+      margin: 0 0 16px 16px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.82em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox table { width: 100%; border-collapse: collapse; }
+
+    #infobox td {
+      padding: 4px 8px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 40%;
+      color: #444444;
+    }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+    }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana">_</span>
+      <span class="boton-ventana">□</span>
+      <span class="boton-ventana">×</span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−2 niveles</div>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+
+      <div id="columna-izquierda">
+        <img src="imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Sergei Konstantínovich Byzantov</h1>
+          <div class="advertencia-articulo">
+            ⚠ Este artículo está siendo modificado en este momento.
+          </div>
+
+          <div id="infobox">
+            <div class="infobox-titulo">Sergei Konstantínovich Byzantov</div>
+            <img id="foto-byzantov" src="imagenes/articulos/bizantov.jpg" alt="Sergei Konstantínovich Byzantov" style="width:100%; height:auto; display:block;">
+            <table>
+              <tr><td>Nacimiento</td><td>1918 · Moscú</td></tr>
+              <tr><td>Fallecimiento</td><td><span id="dato-oculto">17 · 03 · 1964 · Buenos Aires</span></td></tr>
+              <tr><td>Ocupación</td><td>Físico · Cosmonauta · Político</td></tr>
+              <tr><td>Nacionalidad</td><td>Soviético · Argentino</td></tr>
+              <tr><td>Cargo</td><td>Presidente CNIE 1950–1955</td></tr>
+              <tr><td>Movimiento</td><td><a href="404.html">Cosmismo</a></td></tr>
+            </table>
+          </div>
+
+          <p>
+            Sergei Konstantínovich Byzantov (Сергей Константинович Византов)
+            fue un físico, cosmonauta y político soviético nacionalizado argentino.
+            Fue presidente de la <a href="404.html">Comisión Nacional de Investigaciones
+            Espaciales (CNIE)</a> desde 1950 hasta 1955. Byzantov fue impulsor de
+            programas fundamentales en la historia de la cosmonáutica argentina tales
+            como <span class="redactado">███████</span>, K3/4,
+            <span class="redactado">█████</span> y <span class="redactado">████████</span>.
+          </p>
+
+          <p id="texto-mutable">
+            Byzantov sirvió en las fuerzas aéreas soviéticas durante la Segunda
+            Guerra Mundial, durante la cual desarrolló manifiestos en materia
+            política y científica, inscribiéndose en el movimiento cultural
+            conocido como Cosmismo.
+          </p>
+
+          <p>
+            Como consecuencia de su actividad política, en adición a la
+            <span class="redactado">████████</span> de <span class="redactado">████████</span>,
+            Sergei Byzantov fue arrestado y encarcelado por las autoridades
+            soviéticas inmediatamente después de terminar la guerra. Fue internado
+            en un campo de trabajos forzados del Gulag soviético desde 1945 hasta
+            1950 cuando, sirviendo como asistente mecánico, Byzantov secuestró una
+            avioneta defectuosa con la que aterrizó forzosamente en la República
+            del Sinaí, donde permaneció algunos meses antes de asentar su exilio
+            político en la Argentina.
+          </p>
+
+          <h2>Exilio en la Argentina</h2>
+          <p>
+            <span class="redactado">████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████</span>
+          </p>
+
+          <div id="categorias">
+            Categorías: Personas · Niveles −2 a −4 · Cosmismo · NO INDEXAR
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+
+    </div>
+
+  </div>
+
+  <!-- BARRA DE TAREAS -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+
+var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        localStorage.setItem('paginaAnterior', window.location.href);
+    actualizarMonitor(integridad);
+    if (integridad <= 0) {
+      window.location.href = 'gameover.html';
+    }
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    // TEXTO MUTABLE
+    var textoFijo = 'Byzantov sirvió en las fuerzas aéreas soviéticas durante la Segunda Guerra Mundial, durante la cual desarrolló manifiestos en materia política y científica, inscribiéndose en el movimiento cultural conocido como Cosmismo. ';
+    var textoAgregado = 'Más adelante vinculado al movimiento de reunificación ontológico ';
+    var textoLink = 'Tikkun Olam';
+    var textoMutable = document.getElementById('texto-mutable');
+
+    function escribirCaracteres(texto, esLink, callback) {
+      var i = 0;
+      var span = document.createElement('span');
+      if (esLink) {
+        var a = document.createElement('a');
+        a.href = '404.html';
+        a.id = 'link-tikkun';
+        span.appendChild(a);
+        textoMutable.appendChild(span);
+        var intervalo = setInterval(function() {
+          a.textContent += texto[i];
+          i++;
+          if (i >= texto.length) { clearInterval(intervalo); if (callback) callback(); }
+        }, 28);
+      } else {
+        textoMutable.appendChild(span);
+        var intervalo = setInterval(function() {
+          span.textContent += texto[i];
+          i++;
+          if (i >= texto.length) { clearInterval(intervalo); if (callback) callback(); }
+        }, 28);
+      }
+    }
+
+    var variantesCorrupcion = [
+      '"Redaction10","Times New Roman",serif',
+      '"Redaction35","Times New Roman",serif',
+      '"Redaction70","Times New Roman",serif',
+      '"Redaction100","Times New Roman",serif',
+      '"Redaction70","Times New Roman",serif',
+      '"Redaction50","Times New Roman",serif'
+    ];
+
+    function corromperYDesaparecer(callback) {
+      var link = document.getElementById('link-tikkun');
+      if (!link) { if (callback) callback(); return; }
+      var i = 0;
+      var intervalo = setInterval(function() {
+        if (i < variantesCorrupcion.length) {
+          link.style.fontFamily = variantesCorrupcion[i];
+          i++;
+        } else {
+          clearInterval(intervalo);
+          var borrar = setInterval(function() {
+            var actual = link.textContent;
+            if (actual.length === 0) {
+              clearInterval(borrar);
+              var spanPadre = link.parentNode;
+              var spanAnterior = spanPadre ? spanPadre.previousSibling : null;
+              if (spanPadre) spanPadre.remove();
+              if (spanAnterior) spanAnterior.remove();
+              if (callback) callback();
+            } else {
+              link.textContent = actual.slice(0, -1);
+            }
+          }, 12);
+        }
+      }, 80);
+    }
+
+    function ciclo() {
+      escribirCaracteres(textoAgregado, false, function() {
+        escribirCaracteres(textoLink, true, function() {
+          setTimeout(function() {
+            corromperYDesaparecer(function() {
+              setTimeout(ciclo, 17000);
+            });
+          }, 1200);
+        });
+      });
+    }
+
+    setTimeout(function() {
+      textoMutable.textContent = textoFijo;
+      ciclo();
+    }, 5000);
+
+    // IMAGEN QUE SE DEGRADA
+    var foto = document.getElementById('foto-byzantov');
+    var nivelDegradacion = 0;
+    var filtros = [
+      'none',
+      'contrast(1.1) blur(0.3px)',
+      'contrast(1.2) blur(0.6px) brightness(0.95)',
+      'contrast(1.4) blur(1px) brightness(0.9)',
+      'contrast(1.8) blur(2px) brightness(0.8)',
+      'contrast(2.5) blur(3px) brightness(0.7) grayscale(0.5)',
+      'contrast(4) blur(5px) brightness(0.5) grayscale(1)'
+    ];
+
+    setInterval(function() {
+      if (nivelDegradacion < filtros.length - 1) {
+        nivelDegradacion++;
+        foto.style.filter = filtros[nivelDegradacion];
+      }
+    }, 8000);
+
+    // DATO QUE SE DESVELA
+    var datoOculto = document.getElementById('dato-oculto');
+    setTimeout(function() {
+      function revelar() {
+        datoOculto.classList.add('revelado');
+        setTimeout(function() {
+          datoOculto.classList.remove('revelado');
+          setTimeout(revelar, 25000);
+        }, 3000);
+      }
+      revelar();
+    }, 15000);
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+    // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+     // FUNCIÓN DE DAÑO
+    var audioCtx = null;
+    document.addEventListener('click', function() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    });
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      // SONIDO DE ERROR
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // PARPADEO ROJO DEL LABEL
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      // CUENTA REGRESIVA
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
+ </script>
+
+</body>
+</html>

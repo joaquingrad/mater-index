@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Mensajito</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e8e8e8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .card {
+      width: min(480px, 90vw);
+      background: #F0FBF6;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 56px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #134E3A;
+    }
+
+    .logo span { color: #22B07D; }
+
+    .saludo {
+      font-size: 20px;
+      color: #134E3A;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .saludo strong {
+      display: block;
+      font-size: 15px;
+      color: #22B07D;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .btn-ingresar {
+      width: 100%;
+      background: #22B07D;
+      color: #ffffff;
+      font-weight: bold;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-ingresar:hover { background: #1a9a6a; }
+
+    .btn-ingresar:disabled {
+      background: #a0d8be;
+      cursor: default;
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: girar 0.7s linear infinite;
+    }
+
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    .pie {
+      font-size: 12px;
+      color: #aaaaaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">mensaji<span>to</span></div>
+
+    <div class="saludo">
+      Hola, <strong>INVESTIGACIONES.UBA</strong>
+      ¿Vemos tus mensajitos?
+    </div>
+
+    <button class="btn-ingresar" id="btn" onclick="ingresar()">
+      <span id="btn-texto">Ingresar</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+    <div class="pie">Mensajito · Red de mensajes seguros · © 2026</div>
+  </div>
+
+<script>
+  function ingresar() {
+    var btn = document.getElementById('btn');
+    var btnTexto = document.getElementById('btn-texto');
+    var spinner = document.getElementById('spinner');
+    btn.disabled = true;
+    btnTexto.textContent = 'Verificando...';
+    spinner.style.display = 'block';
+    setTimeout(function() {
+      window.location.href = 'inbox.html';
+    }, 1200);
+  }
+      // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+</script>
+
+</body>
+</html>

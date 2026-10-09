@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Mensajito</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F0FBF6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    /* --- PANTALLA SPLASH --- */
+    #pantalla-splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      text-align: center;
+    }
+
+    #logo-wrap {
+      display: flex;
+      gap: 0px;
+    }
+
+    .letra-logo {
+      font-size: 42px;
+      font-weight: bold;
+      color: #134E3A;
+      opacity: 0;
+      transform: translateY(12px);
+      display: inline-block;
+      animation: aparecer-letra 0.4s forwards;
+    }
+
+    .letra-verde {
+      color: #22B07D;
+    }
+
+    @keyframes aparecer-letra {
+      0%   { opacity: 0; transform: translateY(12px); }
+      60%  { opacity: 1; transform: translateY(-4px); }
+      100% { opacity: 1; transform: translateY(0px); }
+    }
+
+    @keyframes pulso-logo {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    #logo-wrap.pulsando {
+      animation: pulso-logo 2s ease-in-out infinite;
+    }
+
+    #eslogan {
+      font-size: 16px;
+      color: #5a8a70;
+      opacity: 0;
+      transition: opacity 1s;
+      letter-spacing: 0.3px;
+    }
+
+    #btn-ingresar {
+      background: #22B07D;
+      color: #ffffff;
+      font-weight: bold;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 40px;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: inherit;
+      opacity: 0;
+      transition: opacity 0.8s, background 0.2s;
+    }
+
+    #btn-ingresar:hover { background: #1a9a6a; }
+
+    /* --- PANTALLA DE CARGA --- */
+    #pantalla-carga {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
+    }
+
+    #logo-carga {
+      font-size: 28px;
+      font-weight: bold;
+      color: #134E3A;
+    }
+
+    #logo-carga span { color: #22B07D; }
+
+    #texto-carga {
+      font-size: 15px;
+      color: #5a8a70;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    #barra-wrap {
+      width: 280px;
+      height: 6px;
+      background: #d0ead8;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    #barra-progreso {
+      height: 100%;
+      width: 0%;
+      background: #22B07D;
+      border-radius: 6px;
+      transition: width 0.1s linear;
+    }
+
+    #subtexto-carga {
+      font-size: 12px;
+      color: #aaaaaa;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="pantalla-splash">
+
+    <div id="logo-wrap">
+      <span class="letra-logo" style="animation-delay: 0.1s;">m</span>
+      <span class="letra-logo" style="animation-delay: 0.2s;">e</span>
+      <span class="letra-logo" style="animation-delay: 0.3s;">n</span>
+      <span class="letra-logo" style="animation-delay: 0.4s;">s</span>
+      <span class="letra-logo" style="animation-delay: 0.5s;">a</span>
+      <span class="letra-logo" style="animation-delay: 0.6s;">j</span>
+      <span class="letra-logo" style="animation-delay: 0.7s;">i</span>
+      <span class="letra-logo letra-verde" style="animation-delay: 0.8s;">t</span>
+      <span class="letra-logo letra-verde" style="animation-delay: 0.9s;">o</span>
+    </div>
+
+    <div id="eslogan">Un lugar seguro para encontrarnos.</div>
+
+    <button id="btn-ingresar" onclick="iniciarCarga()">Ingresar</button>
+
+  </div>
+
+  <!-- CARGA -->
+  <div id="pantalla-carga">
+    <div id="logo-carga">mensaji<span>to</span></div>
+    <div id="texto-carga">Buscando los mensajitos de<br><strong>INVESTIGACIONES.UBA</strong>...</div>
+    <div id="barra-wrap">
+      <div id="barra-progreso"></div>
+    </div>
+    <div id="subtexto-carga">Conectando de forma segura</div>
+  </div>
+
+<script>
+
+  // Mostrar eslogan y botón después de que las letras aparezcan
+    localStorage.clear();
+  localStorage.setItem('integridad', '71');
+   function reiniciarSplash() {
+    var letras = document.querySelectorAll('.letra-logo');
+    var eslogan = document.getElementById('eslogan');
+    var btn = document.getElementById('btn-ingresar');
+    var logo = document.getElementById('logo-wrap');
+
+    // Resetear todo
+    logo.classList.remove('pulsando');
+    eslogan.style.opacity = '0';
+    btn.style.opacity = '0';
+    letras.forEach(function(l) {
+      l.style.opacity = '0';
+      l.style.transform = 'translateY(12px)';
+    });
+
+    // Reanimar letras
+    letras.forEach(function(l, i) {
+      setTimeout(function() {
+        l.style.transition = 'none';
+        l.style.animation = 'none';
+        setTimeout(function() {
+          l.style.animation = 'aparecer-letra 0.4s forwards';
+        }, 20);
+      }, i * 100);
+    });
+
+    // Eslogan y botón
+    setTimeout(function() {
+      eslogan.style.opacity = '1';
+    }, 1400);
+
+    setTimeout(function() {
+      btn.style.opacity = '1';
+      logo.classList.add('pulsando');
+    }, 2000);
+  }
+
+  reiniciarSplash();
+  setInterval(reiniciarSplash, 7000);
+
+  function iniciarCarga() {
+    // Ocultar splash
+    document.getElementById('pantalla-splash').style.display = 'none';
+    // Mostrar carga
+    var carga = document.getElementById('pantalla-carga');
+    carga.style.display = 'flex';
+
+    // Animar barra de progreso
+    var barra = document.getElementById('barra-progreso');
+    var progreso = 0;
+      var velocidades = [3, 5, 2, 6, 1, 4, 3, 7, 2, 5, 3, 4, 2, 6, 1, 3, 5, 2, 4, 3];
+    var idx = 0;
+
+    var intervalo = setInterval(function() {
+      var incremento = velocidades[idx % velocidades.length];
+      progreso = Math.min(progreso + incremento, 97);
+      barra.style.width = progreso + '%';
+      idx++;
+
+      if (progreso >= 97) {
+        clearInterval(intervalo);
+        // Llegar al 100% y redirigir
+        setTimeout(function() {
+          barra.style.width = '100%';
+          setTimeout(function() {
+            window.location.href = 'inbox.html';
+          }, 400);
+        }, 300);
+      }
+    }, 180);
+  }
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+        // Guardar página actual para volver desde 404
+    localStorage.setItem('paginaAnterior', window.location.href);
+</script>
+
+</body>
+</html>

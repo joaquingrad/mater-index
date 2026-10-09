@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>ERROR 404 — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    /* --- VENTANA --- */
+    #ventana {
+      width: 75vw;
+      height: 85vh;
+      background-color: #000000;
+      color: #33ff33;
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      overflow: hidden;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    /* --- MONITOR SYS --- */
+    #monitor {
+      position: fixed;
+      top: 580px;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      font-size: 7px;
+      text-align: center;
+      line-height: 8px;
+      color: #333333;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .label.alerta {
+      color: #ff4444;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .valor.critico {
+      color: #ff4444;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    /* --- CONTENIDO --- */
+    #cuerpo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 40px;
+    }
+
+    #codigo-error {
+      font-size: 6em;
+      color: #ffffff;
+      font-family: "Redaction100", serif;
+      animation: glitch-error 2s infinite;
+      letter-spacing: 8px;
+    }
+
+    @keyframes glitch-error {
+      0%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: 8px; }
+      4%   { opacity: 0.2; transform: skewX(-12deg); letter-spacing: -4px; color: #ff0000; }
+      5%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: 8px; color: #ffffff; }
+      50%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: 8px; }
+      51%  { opacity: 0.3; transform: skewX(8deg);   letter-spacing: 12px; color: #ff0000; }
+      52%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: 8px; color: #ffffff; }
+      100% { opacity: 1;   transform: skewX(0deg);   letter-spacing: 8px; }
+    }
+
+    #mensaje {
+      font-size: 0.9em;
+      color: #33ff33;
+      text-align: center;
+      line-height: 2;
+      letter-spacing: 2px;
+    }
+
+    #submensaje {
+      font-size: 0.72em;
+      color: #555555;
+      text-align: center;
+      line-height: 1.8;
+      letter-spacing: 1px;
+      font-family: "Redaction", serif;
+    }
+
+    #volver {
+      margin-top: 16px;
+      font-size: 0.9em;
+      font-weight: bold;
+      color: #0645ad;
+      text-decoration: underline;
+      cursor: pointer;
+      letter-spacing: 2px;
+    }
+
+    #volver:hover { color: #33ff33; }
+
+    #pie-404 {
+      font-size: 0.7em;
+      color: #222222;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    /* --- BARRA DE TAREAS --- */
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana">_</span>
+      <span class="boton-ventana">□</span>
+      <span class="boton-ventana">×</span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">desconocida</div>
+    </div>
+  </div>
+
+  <!-- VENTANA -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <span class="titulo-ventana">MATER.INDEX</span>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="cuerpo">
+      <div id="codigo-error">404</div>
+      <div id="mensaje">
+        EXPEDIENTE NO ENCONTRADO<br>
+        EL ARCHIVO FUE MOVIDO, ELIMINADO O NUNCA EXISTIÓ<br>
+        SU BÚSQUEDA HA SIDO REGISTRADA
+      </div>
+      <div id="submensaje">
+        Profundidad actual: desconocida<br>
+        Integridad: <span id="integridad-submensaje">—</span>%
+      </div>
+      <a id="volver" href="#" onclick="volver(event)">&gt; Volver a la pagina anterior</a>
+      <div id="pie-404">mater.index · nivel desconocido · NO INDEXAR</div>
+    </div>
+
+  </div>
+
+  <!-- BARRA DE TAREAS -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+  <script>
+
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+    actualizarMonitor(integridad);
+
+    function recibirDano(puntos) {
+      var objetivo = Math.max(0, integridad - puntos);
+
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        document.getElementById('integridad-submensaje').textContent = actual;
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() {
+              window.location.href = 'gameover.html';
+            }, 800);
+          }
+        }
+      }, 40);
+    }
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      var label = document.getElementById('label-integridad');
+      if (valor) valor.textContent = porcentaje + '%';
+      if (label && porcentaje <= 30) {
+        valor.classList.add('critico');
+        label.classList.add('alerta');
+      }
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    // Bajar integridad al cargar
+    setTimeout(function() {
+      recibirDano(20);
+    }, 500);
+
+    function volver(e) {
+      e.preventDefault();
+      var anterior = localStorage.getItem('paginaAnterior');
+      if (anterior) {
+        window.location.href = anterior;
+      } else {
+        window.location.href = 'loby.html';
+      }
+    }
+
+    var variantes404 = [
+      "Redaction35", "Redaction50", "Redaction70",
+      "Redaction100", "Redaction70", "Redaction50"
+    ];
+    var codigo = document.getElementById('codigo-error');
+    var i = 0;
+    setInterval(function() {
+      codigo.style.fontFamily = variantes404[i % variantes404.length];
+      i++;
+    }, 300);
+
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+
+  </script>
+
+</body>
+</html>

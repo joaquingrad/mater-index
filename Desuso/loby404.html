@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>MATER.INDEX — Acceso</title>
+  <style>
+    
+@font-face {
+      font-family: "Redaction";
+      src: url("fonts/Redaction-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction10";
+      src: url("fonts/Redaction10-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction20";
+      src: url("fonts/Redaction20-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction35";
+      src: url("fonts/Redaction35-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction50";
+      src: url("fonts/Redaction50-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction70";
+      src: url("fonts/Redaction70-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: "Redaction100";
+      src: url("fonts/Redaction100-Regular.otf") format("opentype");
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #000000;
+      color: #33ff33;
+      font-family: "Courier New", Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- BARRA SUPERIOR --- */
+    #barra-superior {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      font-size: 0.78em;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 0.2s;
+    }
+
+    #barra-superior .alerta {
+      color: #ff4444;
+    }
+
+    /* --- CENTRO --- */
+    #centro {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 40px 16px;
+    }
+
+    #logo {
+      width: 200px;
+      height: auto;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 0.6s;
+    }
+
+    #subtitulo-superior {
+      font-size: 0.78em;
+      letter-spacing: 4px;
+      text-align: center;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 1.2s;
+    }
+
+    #titulo-principal {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 5em;
+      color: #ffffff;
+      letter-spacing: 8px;
+      text-align: center;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 1.8s;
+    }
+
+    #subtitulo-inferior {
+      font-size: 0.78em;
+      letter-spacing: 6px;
+      text-align: center;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 2.1s;
+    }
+
+    #profundidad {
+      font-size: 0.82em;
+      letter-spacing: 3px;
+      margin-top: 12px;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 2.4s;
+    }
+
+    /* --- LINKS DE ENTRADA --- */
+    #buscar, #suerte {
+      font-size: 1.1em;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: default;
+      color: #ffffff;
+      opacity: 0;
+    }
+
+    #buscar {
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 2.7s;
+    }
+
+    #suerte {
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 3s;
+    }
+
+    #buscar.es-link, #suerte.es-link {
+      color: #0645ad;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* --- PIE --- */
+    #pie {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 16px;
+      font-size: 0.72em;
+      color: #555555;
+      border-top: 1px solid #111111;
+      opacity: 0;
+      animation: aparecer 0.5s forwards;
+      animation-delay-disabled: 3s;
+    }
+
+    /* --- POPUP --- */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background-color: #f0f0f0;
+      border: 2px solid #333333;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      box-shadow: 4px 4px 0px #000000;
+      z-index: 999;
+      color: #1a1a1a;
+    }
+
+    #popup .popup-barra {
+      background-color: #1a1a60;
+      color: #ffffff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #popup .popup-cerrar {
+      cursor: pointer;
+      background: #cc0000;
+      color: white;
+      border: none;
+      padding: 0 6px;
+      font-size: 1em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #popup .popup-cuerpo {
+      padding: 14px 12px;
+      line-height: 1.6;
+    }
+
+    #popup .popup-alerta {
+      color: #cc0000;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    #popup .popup-boton {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 0 12px 12px 12px;
+      padding: 6px;
+      background-color: #d4d0c8;
+      border: 2px solid #333333;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9em;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #popup .popup-boton:hover {
+      background-color: #bbb8b0;
+    }
+
+    /* --- ANIMACIONES --- */
+    @keyframes aparecer {
+      0%   { opacity: 0; }
+      99%  { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes glitch-boton {
+      0%   { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      10%  { opacity: 0.2; transform: skewX(-10deg); letter-spacing: -4px; }
+      12%  { opacity: 1;   transform: skewX(6deg);   letter-spacing: 6px; }
+      14%  { opacity: 0.3; transform: skewX(-4deg);  letter-spacing: -2px; }
+      16%  { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+      100% { opacity: 1;   transform: skewX(0deg);   letter-spacing: normal; }
+    }
+
+    .glitchando {
+      animation: glitch-boton 1s forwards;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- POPUP -->
+  <div id="popup">
+    <div class="popup-barra">
+      <span>aviso_del_sistema.exe</span>
+      <button class="popup-cerrar" onclick="cerrarPopup()">×</button>
+    </div>
+    <div class="popup-cuerpo">
+      <div class="popup-alerta">⚠ Acceso no autorizado</div>
+      El expediente solicitado figura como contenido inestable.
+      Su descenso queda registrado.
+    </div>
+    <button class="popup-boton" onclick="aceptarDescenso()">Aceptar</button>
+  </div>
+
+  <!-- BARRA SUPERIOR -->
+  <div id="barra-superior">
+    <span>MATER.INDEX</span>
+    <span class="alerta">INTEGRIDAD 41% · 3 PROCESOS NO IDENTIFICADOS</span>
+  </div>
+
+  <!-- CENTRO -->
+  <div id="centro">
+    <img src="imagenes/logo2.png" alt="MATER.index" id="logo">
+    <div id="subtitulo-superior"></div>
+    <div id="titulo-principal">MATER.INDEX</div>
+    <div id="subtitulo-inferior">· Piadoso como una paloma y prudente como una víbora ·</div>
+    <div id="profundidad">PROFUNDIDAD 0 · SUPERFICIE</div>
+    <a id="buscar" href="#" onclick="irBuscar(event)">&gt; Buscar</a>
+    <a id="suerte" href="#" onclick="irSuerte(event)">&gt; Aún tengo suerte</a>
+  </div>
+
+  <!-- PIE -->
+  <div id="pie">
+    <span>Archivos · Contenido Inestable · Niveles −2 a −8 · NO INDEXAR</span>
+    <span>ANTORCHA ▮▮░░░</span>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    var variantestitulo = [
+      "Redaction", "Redaction10", "Redaction20", "Redaction35",
+      "Redaction50", "Redaction70", "Redaction100",
+      "Redaction70", "Redaction50", "Redaction35", "Redaction20", "Redaction10"
+    ];
+    var titulo = document.getElementById('titulo-principal');
+    var iTitulo = 0;
+
+    setInterval(function() {
+      titulo.style.fontFamily = variantestitulo[iTitulo % variantestitulo.length];
+      iTitulo++;
+    }, 320);
+    
+
+    var buscar = document.getElementById('buscar');
+    var suerte = document.getElementById('suerte');
+
+    setTimeout(function() {
+      hacerGlitch(buscar, function() {
+        convertirEnLink(buscar);
+        iniciarLoop(buscar, 7000);
+      });
+    }, 400);
+
+    setTimeout(function() {
+      hacerGlitch(suerte, function() {
+        convertirEnLink(suerte);
+        iniciarLoop(suerte, 11000);
+      });
+    }, 800);
+
+    function hacerGlitch(elemento, callback) {
+      elemento.classList.add('glitchando');
+      setTimeout(function() {
+        elemento.classList.remove('glitchando');
+        if (callback) callback();
+      }, 1000);
+    }
+
+    function convertirEnLink(elemento) {
+      elemento.classList.add('es-link');
+    }
+
+    function iniciarLoop(elemento, intervalo) {
+      setInterval(function() {
+        elemento.classList.remove('es-link');
+        hacerGlitch(elemento, function() {
+          convertirEnLink(elemento);
+        });
+      }, intervalo);
+    }
+
+    function irBuscar(event) {
+      event.preventDefault();
+      if (!buscar.classList.contains('es-link')) return;
+      window.location.href = '404.html';
+    }
+
+    function irSuerte(event) {
+      event.preventDefault();
+      if (!suerte.classList.contains('es-link')) return;
+      window.location.href = 'feos.html';
+    }
+
+  </script>
+
+</body>
+</html>

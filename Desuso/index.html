@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sepulcrum.index — PRN</title>
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f8f5e6;
+      color: #1a1a1a;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 16px;
+    }
+
+    /* --- ESQUELETO GENERAL: tres columnas de punta a punta --- */
+    #esqueleto {
+      display: flex;
+      align-items: stretch;
+      min-height: 100vh;
+    }
+
+    /* --- BARRA IZQUIERDA (de punta a punta, con logo) --- */
+    #barra-izquierda {
+      width: 220px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      border-right: 1px solid #cccccc;
+      padding: 16px 14px;
+      font-size: 0.82em;
+      line-height: 1.6;
+    }
+
+    #barra-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 16px auto;
+    }
+
+    #barra-izquierda h3 {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555555;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    #barra-izquierda p {
+      margin-bottom: 12px;
+      color: #444444;
+    }
+
+    /* --- COLUMNA PRINCIPAL: encabezado + contenido --- */
+    #columna-principal {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- ENCABEZADO --- */
+    #encabezado {
+      background-color: #f8f5e6;
+      color: #1a1a1a;
+      padding: 12px 16px 0px 16px;
+    }
+
+    #encabezado h1 {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #b06fdb;
+    }
+
+    #navegacion {
+      border-top: 1px solid #cccccc;
+      padding: 6px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    #navegacion a {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.82em;
+      color: #1a1a1a;
+      text-decoration: none;
+      padding: 2px 4px;
+    }
+
+    #navegacion a:hover {
+      color: #777777;
+    }
+
+    /* --- CONTENIDO CENTRAL --- */
+    #contenedor {
+      flex: 1;
+      padding: 24px 32px;
+      min-width: 0;
+    }
+
+    #articulo h1 {
+      font-size: 2.4em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    /* --- ADVERTENCIA EMBEBIDA EN EL ARTÍCULO --- */
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    #articulo h2 {
+      font-size: 1.4em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 24px 0 10px 0;
+    }
+
+    #articulo a {
+      color: #0645ad;
+    }
+
+    #articulo a:visited {
+      color: #551a8b;
+    }
+
+    .resaltado {
+      background-color: #ffffa0;
+      padding: 0 2px;
+    }
+
+    /* --- INFOBOX (embebido en el contenido) --- */
+    #infobox {
+      float: right;
+      width: 260px;
+      margin: 0 0 16px 20px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.85em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox .imagen-corrupta {
+      background: repeating-linear-gradient(
+        45deg,
+        #cccccc,
+        #cccccc 4px,
+        #e8e8e8 4px,
+        #e8e8e8 12px
+      );
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555555;
+      font-size: 0.82em;
+      border-bottom: 1px solid #aaaaaa;
+    }
+
+    #infobox .alerta-infobox {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-size: 0.82em;
+      font-weight: bold;
+    }
+
+    #infobox .alerta-infobox .subtexto {
+      font-weight: normal;
+      color: #ff4444;
+    }
+
+    #infobox table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #infobox td {
+      padding: 5px 10px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 45%;
+      color: #444444;
+    }
+
+    /* --- RIZOMA DE ENLACES --- */
+    #rizoma {
+      clear: both;
+      border: 1px solid #aaaaaa;
+      padding: 12px 16px;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+    }
+
+    #rizoma .rizoma-titulo {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333333;
+    }
+
+    #rizoma .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+
+    #rizoma .links a {
+      color: #0645ad;
+    }
+
+    /* --- CATEGORÍAS --- */
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 16px;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #categorias a {
+      color: #0645ad;
+    }
+
+    /* --- BARRA DERECHA: SISTEMA (de punta a punta) --- */
+    #barra-derecha {
+      width: 220px;
+      flex-shrink: 0;
+      background-color: #0a0a0a;
+      color: #33ff33;
+      padding: 16px 14px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.8em;
+    }
+
+    #barra-derecha .dato-sistema {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222222;
+    }
+
+    #barra-derecha .dato-sistema strong {
+      display: block;
+      color: #888888;
+      font-size: 0.85em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    #barra-derecha .alerta {
+      color: #ff4444;
+    }
+
+    /* --- POPUP --- */
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background-color: #f0f0f0;
+      border: 2px solid #333333;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      box-shadow: 4px 4px 0px #000000;
+      z-index: 999;
+    }
+
+    #popup .popup-barra {
+      background-color: #1a1a60;
+      color: #ffffff;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9em;
+    }
+
+    #popup .popup-cerrar {
+      cursor: pointer;
+      background: #cc0000;
+      color: white;
+      border: none;
+      padding: 0 6px;
+      font-size: 1em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #popup .popup-cerrar:hover {
+      background: #ff0000;
+    }
+
+    #popup .popup-cuerpo {
+      padding: 14px 12px;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    #popup .popup-cuerpo .popup-alerta {
+      color: #cc0000;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    #popup .popup-boton {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 0 12px 12px 12px;
+      padding: 6px;
+      background-color: #d4d0c8;
+      border: 2px solid #333333;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9em;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #popup .popup-boton:hover {
+      background-color: #bbb8b0;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- POPUP -->
+  <div id="popup">
+    <div class="popup-barra">
+      <span>aviso_del_sistema.exe</span>
+      <button class="popup-cerrar" onclick="cerrarPopup()">×</button>
+    </div>
+    <div class="popup-cuerpo">
+      <div class="popup-alerta">⚠ Su exploración ha sido detectada</div>
+      Un agente solicita acceso a su cámara. ¿Permitir?
+    </div>
+    <button class="popup-boton" onclick="permitirAcceso()">Permitir</button>
+  </div>
+
+  <!-- ESQUELETO: tres columnas de punta a punta -->
+  <div id="esqueleto">
+
+    <!-- BARRA IZQUIERDA -->
+    <div id="barra-izquierda">
+      <img src="imagenes/logo1.png" alt="Logo PRN" class="logo">
+      <h3>Herramientas</h3>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+      <p>
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+        nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur.
+      </p>
+    </div>
+
+    <!-- COLUMNA PRINCIPAL: encabezado + contenido -->
+    <div id="columna-principal">
+
+      <!-- ENCABEZADO -->
+      <div id="encabezado">
+        <h1>Sepulcrum.index</h1>
+        <div id="navegacion">
+          <a href="index.html">[ INICIO ]</a>
+          <a href="#">[ ÍNDICE ]</a>
+          <a href="#">[ CONFECIÓN ]</a>
+          <a href="#">[ ANILLO WEB ]</a>
+          <a href="#">[ ACERCA ]</a>
+        </div>
+      </div>
+
+      <!-- CONTENIDO CENTRAL -->
+      <div id="contenedor">
+        <div id="articulo">
+
+          <h1>Un Mundo sin ella</h1>
+          <div class="advertencia-articulo">
+            &gt; ⚠ Este artículo está siendo modificado en este momento.
+          </div>
+
+          <!-- INFOBOX EMBEBIDO -->
+          <div id="infobox">
+            <div class="infobox-titulo">sepulcrum.index</div>
+            <div class="imagen-corrupta">[ imagen corrupta · 0x8F ]</div>
+            <div class="alerta-infobox">
+              aviso_del_sistema.exe<br>
+              <span class="subtexto">⚠ Su exploración ha sido detectada</span>
+            </div>
+            <table>
+              <tr>
+                <td>Estado</td>
+                <td>Vigente</td>
+              </tr>
+              <tr>
+                <td>Miembros conocidos</td>
+                <td><span style="background:#cc0000; color:#cc0000;">████████</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <p>
+            La muerte temprana de una joven María Eva Duarte
+            desencadena inesperadamente una adelantada invención de la World Wide Web
+            y el desarrollo de una cultura política subterránea en ella.
+          </p>
+
+          <h2>Cosmismo</h2>
+          <p>
+            Corriente cultural originada en Rusia
+            a principios del siglo XX. Proyecta a la humanidad conectada en una Causa Común
+            hacia la conquista del espacio y la solución tecnológica del problema de la muerte.
+            El Cosmismo se opone a la idea de Progreso. en el proyecto progresista,
+            los habitantes del tiempo presente y pasado son clases explotadas
+            por los privilegiados habitantes del futuro.
+          </p>
+          <p>
+            El Cosmismo se opone a la idea de Progreso. en el proyecto progresista,
+            los habitantes del tiempo presente y pasado son clases explotadas
+            por los privilegiados habitantes del futuro.
+          </p>
+
+          <!-- RIZOMA DE ENLACES -->
+          <div id="rizoma">
+            <div class="rizoma-titulo">RIZOMA DE ENLACES · PROFUNDIDAD −7</div>
+            <div class="links">
+              <a href="#">Señorío</a>
+              <a href="#">Servidor</a>
+              <a href="#">Cisma</a>
+              <a href="#">Renta</a>
+              <a href="#">Calabozo.exe</a>
+              <a href="#">Florencio Schmit</a>
+              <a href="#">Antorcha</a>
+              <a href="#">Troyano-XII</a>
+             
+              <a href="#">Cosmismo</a>
+              <a href="feos.html">FEOS</a>
+
+              <a href="#">Más profundo</a>
+
+            </div>
+          </div>
+
+          <!-- CATEGORÍAS -->
+          <div id="categorias">
+            Categorías: <a href="#">Doctrinas</a> · <a href="#">Niveles −5 a −9</a> · 
+            <a href="#">Contenido inestable</a> · <a href="#">NO INDEXAR</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!-- fin #columna-principal -->
+
+    <!-- BARRA DERECHA: SISTEMA -->
+    <div id="barra-derecha">
+      <div class="dato-sistema">
+        <strong>Profundidad</strong>
+        −7 niveles
+      </div>
+      <div class="dato-sistema">
+        <strong>Antorcha</strong>
+        ▮▮▯▯▯
+      </div>
+      <div class="dato-sistema alerta">
+        <strong>Integridad del sistema</strong>
+        <span id="integridad-valor">41%</span><br>
+         <span id="procesos-valor">3</span> procesos no identificados
+      </div>
+    </div>
+
+  </div>
+  <!-- fin #esqueleto -->
+
+  <!-- JAVASCRIPT -->
+  <script>
+    document.getElementById('popup').style.display = 'none';
+
+    setTimeout(function() {
+      document.getElementById('popup').style.display = 'block';
+    }, 2000);
+
+    function cerrarPopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+
+    function permitirAcceso() {
+      document.getElementById('integridad-valor').textContent = '11%';
+      document.getElementById('procesos-valor').textContent = '4';
+
+      setTimeout(function() {
+        document.getElementById('popup').style.display = 'none';
+      }, 400);
+    }
+  </script>
+
+</body>
+</html>
