@@ -50,6 +50,36 @@
       align-items: center;
       user-select: none;
       flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 22px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .nav-btn:disabled, .nav-btn.inactivo {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #nav-izquierda {
+      display: flex;
+      gap: 2px;
+      align-items: center;
     }
 
     .titulo-ventana { letter-spacing: 1px; }
@@ -75,7 +105,7 @@
 
     #monitor {
       position: fixed;
-      top: 580px;
+      top: 72vh;
       left: calc(50% - 37.5vw - 100px);
       width: 190px;
       background-color: #0a0a0a;
@@ -104,10 +134,6 @@
       background: #888888;
       border: 1px solid #555555;
       display: inline-block;
-      font-size: 7px;
-      text-align: center;
-      line-height: 8px;
-      color: #333333;
       cursor: not-allowed;
     }
 
@@ -319,7 +345,6 @@
       background-color: #eeeae0;
     }
 
-    /* --- ESPIRAL DE POPUPS --- */
     .popup-espiral {
       position: fixed;
       background-color: #e8e8e8;
@@ -427,11 +452,7 @@
       margin: 0 2px;
     }
 
-    .task-logo {
-      width: 16px;
-      height: 16px;
-      object-fit: contain;
-    }
+    .task-logo { width: 16px; height: 16px; object-fit: contain; }
 
     #taskbar-reloj {
       margin-left: auto;
@@ -448,11 +469,17 @@
       50%  { opacity: 0.3; }
       100% { opacity: 1; }
     }
+
+    @keyframes parpadeo-label {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     /* --- WIDGET MENSAJITO --- */
     #widget-mensajito {
       position: fixed;
       bottom: 48px;
-      right: calc(50% - 37.5vw - 10px);
+      right: 24px;
       width: 280px;
       background: #F0FBF6;
       border-radius: 16px 16px 0 16px;
@@ -465,7 +492,7 @@
       overflow: hidden;
     }
 
-       #widget-mensajito.visible { display: flex; }    #widget-mensajito.visible { 
+    #widget-mensajito.visible {
       display: flex;
       animation: entrar-widget 0.4s ease forwards;
     }
@@ -486,11 +513,11 @@
       font-size: 13px;
     }
 
-    #widget-header .punto { 
-      width: 8px; height: 8px; 
-      background: #33ff33; 
-      border-radius: 50%; 
-      display: inline-block; 
+    #widget-header .punto {
+      width: 8px; height: 8px;
+      background: #33ff33;
+      border-radius: 50%;
+      display: inline-block;
       margin-right: 6px;
       animation: parpadeo-punto 2s infinite;
     }
@@ -535,8 +562,8 @@
       flex-direction: column;
       gap: 6px;
       visibility: hidden;
-      transition: visibility 0s, opacity 0.4s;
       opacity: 0;
+      transition: opacity 0.4s;
     }
 
     .wopcion {
@@ -565,22 +592,28 @@
       75%  { transform: skewX(-4deg); opacity: 0.7; filter: hue-rotate(180deg); }
       100% { transform: skewX(0deg); opacity: 1; filter: none; }
     }
-        @keyframes parpadeo-label {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+
+    @media (max-width: 1400px) {
+      #infobox {
+        float: right;
+        width: 180px;
+        margin: 0 0 12px 12px;
+      }
+      #columna-derecha { display: none; }
     }
+
   </style>
 </head>
 <body>
 
   <div id="monitor">
     <div id="monitor-barra">
-      <span class="boton-ventana">_</span>
-      <span class="boton-ventana">□</span>
-      <span class="boton-ventana">×</span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
     </div>
     <div id="monitor-cuerpo">
-            <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="label" id="label-integridad">Integridad del sistema</div>
       <div class="valor" id="integridad-valor">71%</div>
       <div class="barra-integridad">
         <span class="bloque-barra"></span>
@@ -602,9 +635,28 @@
 
   <div id="popup-container"></div>
 
+  <!-- WIDGET MENSAJITO -->
+  <div id="widget-mensajito">
+    <div id="widget-header">
+      <div><span class="punto"></span>Dr. Ferreyra</div>
+      <div style="font-size:11px; font-weight:normal; opacity:0.8;">mensajito</div>
+    </div>
+    <div id="widget-mensajes">
+      <div class="wmsg-recibido">Por favor, confirmame el horario cuando puedas.</div>
+    </div>
+    <div id="widget-opciones">
+      <button class="wopcion" onclick="responderA()">"Recibí una enciclopedia, creo que encontramos a Abel."</button>
+      <button class="wopcion" onclick="responderB()">"Creo que esta conversación está siendo monitoreada."</button>
+    </div>
+  </div>
+
   <div id="ventana">
     <div id="barra-windows">
-      <span class="titulo-ventana">MATER.INDEX</span>
+      <div id="nav-izquierda">
+        <div class="nav-btn" id="btn-atras" onclick="navegarAtras()">◄</div>
+        <div class="nav-btn" id="btn-adelante" onclick="navegarAdelante()">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
       <div class="botones-windows">
         <div class="btn-win">_</div>
         <div class="btn-win">□</div>
@@ -634,31 +686,25 @@
               <tr><td>Nacimiento</td><td><span class="redactado">██</span> · <span class="redactado">██</span> · 1941</td></tr>
               <tr><td>Fallecimiento</td><td>1983 · Ramal Sur</td></tr>
               <tr><td>Ocupación</td><td>Delegado gremial</td></tr>
-              <tr><td>Afiliación</td><td><a href="FEOS.html">F.E.O.S.</a></td></tr>
+              <tr><td>Afiliación</td><td><a href="feos.html">F.E.O.S.</a></td></tr>
               <tr><td>Causa</td><td><span class="redactado">████████████████</span></td></tr>
             </table>
           </div>
 
-                   <p>
-            <span class="redactado">████████████████████████████████████████████████████</span>
-            delegado del ramal sur.
-            <span class="redactado">████████████████████</span>.
-          </p>
+          <p>Delegado sindical del ramal sur. <span class="redactado">████████████████████</span>.</p>
 
-          <h2>Registro Oficial </h2>
+          <h2>Registro oficial</h2>
           <p>
             Hallado el <span class="redactado">██</span> de febrero de 1983
             en el <span class="redactado-parcial">████████████</span> del ramal sur.
             Causa de muerte: <span class="redactado">██████████████████████</span>.
             <span class="texto-corrupto">El agua no bajó en tres días</span>.
-            Un pequeño mausoleo en su nombre se encuentra instalado dentro del MAVYD.
+            Un pequeño mausoleo en su nombre se encuentra instalado dentro del <a href="museo.html">MAVYD</a>.
           </p>
 
           <h2>Testimonios</h2>
           <p>
-       La <span class="redactado">███████████████████████████████████████████████████████████</span>
-<span class="redactado">████████████████████████████</span> tras <span class="redactado">███████████████████████████</span>
-<span class="redactado">█████████████</span> vinculado al ascenso de <a href="florencio.html">Florencio Schmit</a> dentro de <span class="redactado">███████</span>
+            <span class="redactado">████████████████████████████████████</span> vinculado al ascenso de <a href="florencio.html">Florencio Schmit</a> dentro de <span class="redactado">███████</span>.
           </p>
 
           <div id="categorias">
@@ -683,6 +729,7 @@
   </div>
 
   <script>
+
     var audioCtx = null;
     document.addEventListener('mousemove', function iniciarAudio() {
       if (!audioCtx) {
@@ -690,8 +737,57 @@
         document.removeEventListener('mousemove', iniciarAudio);
       }
     });
-var integridad = parseInt(localStorage.getItem('integridad')) || 71;
-        localStorage.setItem('paginaAnterior', window.location.href);
+
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+    // SISTEMA DE HISTORIAL
+    var historial = JSON.parse(localStorage.getItem('historial') || '[]');
+    var posicion = parseInt(localStorage.getItem('posicion') || '0');
+    var urlActual = window.location.pathname.split('/').pop();
+
+    if (historial.length === 0 || historial[posicion] !== urlActual) {
+      historial = historial.slice(0, posicion + 1);
+      historial.push(urlActual);
+      posicion = historial.length - 1;
+      localStorage.setItem('historial', JSON.stringify(historial));
+      localStorage.setItem('posicion', posicion);
+    }
+
+    function actualizarBotonesNav() {
+      var btnAtras = document.getElementById('btn-atras');
+      var btnAdelante = document.getElementById('btn-adelante');
+      if (btnAtras) {
+        if (posicion > 0) {
+          btnAtras.classList.remove('inactivo');
+        } else {
+          btnAtras.classList.add('inactivo');
+        }
+      }
+      if (btnAdelante) {
+        if (posicion < historial.length - 1) {
+          btnAdelante.classList.remove('inactivo');
+        } else {
+          btnAdelante.classList.add('inactivo');
+        }
+      }
+    }
+
+    function navegarAtras() {
+      if (posicion > 0) {
+        posicion--;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    function navegarAdelante() {
+      if (posicion < historial.length - 1) {
+        posicion++;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    actualizarBotonesNav();
     actualizarMonitor(integridad);
     if (integridad <= 0) window.location.href = 'gameover.html';
 
@@ -710,8 +806,49 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
       });
     }
 
-   
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() { window.location.href = 'gameover.html'; }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
+    }
 
+    // GLITCH TIPOGRÁFICO
     var variantesGlitch = ["Redaction10", "Redaction50", "Redaction100", "Redaction20", "Redaction70"];
     document.querySelectorAll('.texto-corrupto').forEach(function(el) {
       el.addEventListener('animationiteration', function() {
@@ -726,6 +863,84 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
         }, 600);
       });
     });
+
+    // WIDGET MENSAJITO
+    setTimeout(function() {
+      var widget = document.getElementById('widget-mensajito');
+      widget.classList.add('visible');
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.3);
+      }
+      setTimeout(function() {
+        var opciones = document.getElementById('widget-opciones');
+        opciones.style.visibility = 'visible';
+        opciones.style.opacity = '1';
+      }, 1500);
+    }, 5000);
+
+    function escribirLetraPorLetra(elemento, texto, callback) {
+      elemento.textContent = '';
+      var i = 0;
+      var intervalo = setInterval(function() {
+        elemento.textContent += texto[i];
+        i++;
+        if (i >= texto.length) {
+          clearInterval(intervalo);
+          if (callback) callback();
+        }
+      }, 40);
+    }
+
+    function responderA() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      mensajes.appendChild(enviado);
+      escribirLetraPorLetra(enviado, 'Recibí una enciclopedia, creo que encontramos a Abel.', function() {
+        setTimeout(function() {
+          var respuesta = document.createElement('div');
+          respuesta.className = 'wmsg-recibido';
+          mensajes.appendChild(respuesta);
+          mensajes.scrollTop = mensajes.scrollHeight;
+          escribirLetraPorLetra(respuesta, '¡Fantástico! Reunámonos cuanto antes.');
+        }, 1200);
+      });
+    }
+
+    function responderB() {
+      var opciones = document.getElementById('widget-opciones');
+      var mensajes = document.getElementById('widget-mensajes');
+      opciones.style.display = 'none';
+      var enviado = document.createElement('div');
+      enviado.className = 'wmsg-enviado';
+      mensajes.appendChild(enviado);
+      escribirLetraPorLetra(enviado, 'Creo que esta conversación está siendo monitoreada.', function() {
+        setTimeout(function() {
+          var respuesta = document.createElement('div');
+          respuesta.className = 'wmsg-recibido';
+          mensajes.appendChild(respuesta);
+          mensajes.scrollTop = mensajes.scrollHeight;
+          escribirLetraPorLetra(respuesta, '¿A qué te referís?', function() {
+            setTimeout(function() {
+              var widget = document.getElementById('widget-mensajito');
+              widget.classList.add('widget-glitch');
+              setTimeout(function() { widget.style.display = 'none'; }, 800);
+            }, 1500);
+          });
+        }, 1200);
+      });
+    }
 
     function actualizarReloj() {
       var ahora = new Date();
@@ -744,238 +959,8 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
         window.location.href = 'splash.html';
       }
     });
-    // Guardar página actual para volver desde 404
-    localStorage.setItem('paginaAnterior', window.location.href);
-      // WIDGET MENSAJITO
-    setTimeout(function() {
-      var widget = document.getElementById('widget-mensajito');
-      widget.classList.add('visible');
 
-      // Sonido de notificación
-      var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.3);
-
-      // Opciones aparecen 1.5s después
-      setTimeout(function() {
-              document.getElementById('widget-opciones').style.visibility = 'visible';
-        document.getElementById('widget-opciones').style.opacity = '1';
-      }, 1000);
-
-    }, 5000);
-
-    function escribirLetraPorLetra(elemento, texto, callback) {
-      var i = 0;
-      var intervalo = setInterval(function() {
-        elemento.textContent += texto[i];
-        i++;
-        if (i >= texto.length) {
-          clearInterval(intervalo);
-          if (callback) callback();
-        }
-      }, 40);
-    }
-
-    function responderA() {
-      var opciones = document.getElementById('widget-opciones');
-      var mensajes = document.getElementById('widget-mensajes');
-      opciones.style.display = 'none';
-      var enviado = document.createElement('div');
-      enviado.className = 'wmsg-enviado';
-      enviado.textContent = 'Recibí una enciclopedia, creo que encontramos a Abel.';
-      mensajes.appendChild(enviado);
-      setTimeout(function() {
-        var respuesta = document.createElement('div');
-        respuesta.className = 'wmsg-recibido';
-        respuesta.textContent = '¡Fantástico! Reunámonos cuanto antes.';
-        mensajes.appendChild(respuesta);
-        mensajes.scrollTop = mensajes.scrollHeight;
-      }, 1200);
-    }
-
-    function responderB() {
-      var opciones = document.getElementById('widget-opciones');
-      var mensajes = document.getElementById('widget-mensajes');
-      opciones.style.display = 'none';
-      var enviado = document.createElement('div');
-      enviado.className = 'wmsg-enviado';
-      enviado.textContent = 'Creo que esta conversación está siendo monitoreada.';
-      mensajes.appendChild(enviado);
-      setTimeout(function() {
-        var respuesta = document.createElement('div');
-        respuesta.className = 'wmsg-recibido';
-        respuesta.textContent = '¿A qué te referís?';
-        mensajes.appendChild(respuesta);
-        mensajes.scrollTop = mensajes.scrollHeight;
-        setTimeout(function() {
-          var widget = document.getElementById('widget-mensajito');
-          widget.classList.add('widget-glitch');
-          setTimeout(function() {
-            widget.style.display = 'none';
-          }, 800);
-        }, 1500);
-      }, 1200);
-    }    // WIDGET MENSAJITO
-    setTimeout(function() {
-      var widget = document.getElementById('widget-mensajito');
-      widget.classList.add('visible');
-
-      // Sonido de notificación
-      var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.3);
-
-      // Opciones aparecen 1.5s después
-      setTimeout(function() {
-        document.getElementById('widget-opciones').style.display = 'flex';
-      }, 1500);
-
-    }, 5000);
-
-    function escribirLetraPorLetra(elemento, texto, callback) {
-      var i = 0;
-      var intervalo = setInterval(function() {
-        elemento.textContent += texto[i];
-        i++;
-        if (i >= texto.length) {
-          clearInterval(intervalo);
-          if (callback) callback();
-        }
-      }, 40);
-    }
-
-       function responderA() {
-      var opciones = document.getElementById('widget-opciones');
-      var mensajes = document.getElementById('widget-mensajes');
-      opciones.style.display = 'none';
-      var enviado = document.createElement('div');
-      enviado.className = 'wmsg-enviado';
-      enviado.textContent = '';
-      mensajes.appendChild(enviado);
-      escribirLetraPorLetra(enviado, 'Recibí una enciclopedia, creo que encontramos a Abel.', function() {
-        setTimeout(function() {
-          var respuesta = document.createElement('div');
-          respuesta.className = 'wmsg-recibido';
-          respuesta.textContent = '';
-          mensajes.appendChild(respuesta);
-          mensajes.scrollTop = mensajes.scrollHeight;
-          escribirLetraPorLetra(respuesta, '¡Fantástico! Reunámonos cuanto antes.');
-        }, 1200);
-      });
-    }
-
-    function responderB() {
-      var opciones = document.getElementById('widget-opciones');
-      var mensajes = document.getElementById('widget-mensajes');
-      opciones.style.display = 'none';
-      var enviado = document.createElement('div');
-      enviado.className = 'wmsg-enviado';
-      enviado.textContent = '';
-      mensajes.appendChild(enviado);
-      escribirLetraPorLetra(enviado, 'Creo que esta conversación está siendo monitoreada.', function() {
-        setTimeout(function() {
-          var respuesta = document.createElement('div');
-          respuesta.className = 'wmsg-recibido';
-          respuesta.textContent = '';
-          mensajes.appendChild(respuesta);
-          mensajes.scrollTop = mensajes.scrollHeight;
-          escribirLetraPorLetra(respuesta, '¿A qué te referís?', function() {
-            setTimeout(function() {
-              var widget = document.getElementById('widget-mensajito');
-              widget.classList.add('widget-glitch');
-              setTimeout(function() {
-                widget.style.display = 'none';
-              }, 800);
-            }, 1500);
-          });
-        }, 1200);
-      });
-    }
-        // FUNCIÓN DE DAÑO
-    var audioCtx = null;
-    document.addEventListener('click', function() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    });
-
-    function recibirDano(puntos, callback) {
-      var objetivo = Math.max(0, integridad - puntos);
-
-      // SONIDO DE ERROR
-      if (audioCtx) {
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
-        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.4);
-      }
-
-      // PARPADEO ROJO DEL LABEL
-      var label = document.getElementById('label-integridad');
-      if (label) {
-        label.style.color = '#ff4444';
-        label.style.animation = 'parpadeo-label 0.15s infinite';
-        setTimeout(function() {
-          label.style.animation = '';
-          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
-        }, 600);
-      }
-
-      // CUENTA REGRESIVA
-      var actual = integridad;
-      var intervalo = setInterval(function() {
-        actual--;
-        var valorEl = document.getElementById('integridad-valor');
-        if (valorEl) valorEl.textContent = actual + '%';
-        if (actual <= objetivo) {
-          clearInterval(intervalo);
-          integridad = objetivo;
-          localStorage.setItem('integridad', integridad);
-          actualizarMonitor(integridad);
-          if (integridad <= 0) {
-            setTimeout(function() {
-              window.location.href = 'gameover.html';
-            }, 600);
-          }
-          if (callback) callback();
-        }
-      }, 40);
-    }
   </script>
-  <!-- WIDGET MENSAJITO -->
-  <div id="widget-mensajito">
-    <div id="widget-header">
-      <div><span class="punto"></span>Dr. Ferreyra</div>
-      <div style="font-size:11px; font-weight:normal; opacity:0.8;">mensajito</div>
-    </div>
-    <div id="widget-mensajes">
-      <div class="wmsg-recibido">Por favor, confirmame el horario cuando puedas.</div>
-    </div>
-    <div id="widget-opciones">
-      <button class="wopcion" onclick="responderA()">"Recibí una enciclopedia, creo que encontramos a Abel."</button>
-      <button class="wopcion" onclick="responderB()">"Creo que esta conversación está siendo monitoreada."</button>
-    </div>
-  </div>
+
 </body>
 </html>

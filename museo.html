@@ -49,6 +49,7 @@
       flex-shrink: 0;
       position: relative;
       z-index: 10;
+      gap: 8px;
     }
 
     .titulo-ventana { letter-spacing: 1px; }
@@ -72,9 +73,38 @@
       cursor: not-allowed;
     }
 
+    .nav-btn {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 22px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .nav-btn.inactivo {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #nav-izquierda {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
     #monitor {
       position: fixed;
-      top: 580px;
+      top: 72vh;
       left: calc(50% - 37.5vw - 100px);
       width: 190px;
       background-color: #0a0a0a;
@@ -259,7 +289,6 @@
       z-index: 10;
     }
 
-    /* --- CANVAS ANTORCHA --- */
     #antorcha-canvas {
       display: none;
       position: fixed;
@@ -271,7 +300,6 @@
       z-index: 4000;
     }
 
-    /* --- WIDGET EDITOR --- */
     #widget-editor {
       position: fixed;
       top: 50%;
@@ -361,7 +389,6 @@
 
     .eopcion:hover { background: #2a0050; }
 
-    /* --- TASKBAR --- */
     #taskbar {
       position: fixed;
       bottom: 0;
@@ -425,18 +452,18 @@
       padding: 2px 8px;
       font-size: 0.82em;
     }
+
     @keyframes parpadeo-label {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
     }
+
   </style>
 </head>
 <body>
 
-  <!-- CANVAS ANTORCHA -->
   <canvas id="antorcha-canvas"></canvas>
 
-  <!-- MONITOR SYS -->
   <div id="monitor">
     <div id="monitor-barra">
       <span class="boton-ventana"></span>
@@ -444,7 +471,7 @@
       <span class="boton-ventana"></span>
     </div>
     <div id="monitor-cuerpo">
-      <div class="label">Integridad del sistema</div>
+      <div class="label" id="label-integridad">Integridad del sistema</div>
       <div class="valor" id="integridad-valor">71%</div>
       <div class="barra-integridad">
         <span class="bloque-barra"></span>
@@ -464,7 +491,6 @@
     </div>
   </div>
 
-  <!-- WIDGET EDITOR -->
   <div id="widget-editor">
     <div id="editor-header">
       <span>▓ x7r3.0-mndx@██████.net</span>
@@ -480,10 +506,13 @@
     </div>
   </div>
 
-  <!-- VENTANA PRINCIPAL -->
   <div id="ventana">
     <div id="barra-windows">
-      <span class="titulo-ventana">MATER.INDEX</span>
+      <div id="nav-izquierda">
+        <div class="nav-btn inactivo" id="btn-atras" onclick="navegarAtras()">◄</div>
+        <div class="nav-btn inactivo" id="btn-adelante" onclick="navegarAdelante()">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
       <div class="botones-windows">
         <div class="btn-win">_</div>
         <div class="btn-win">□</div>
@@ -507,7 +536,7 @@
           </div>
 
           <p>
-            El <strong>Museo Archivo de la Victoria y la Derrota</strong> (MAVYD) es una institución cultural subterránea fundada en 1987 por miembros sobrevivientes de <a href="FEOS.html">F.E.O.S.</a> en el ramal sur del alcantarillado porteño. Preserva documentos, objetos y memorias relacionadas con <a href="cloacazo.html">El Cloacazo</a> y sus protagonistas.
+            El <strong>Museo Archivo de la Victoria y la Derrota</strong> (MAVYD) es una institución cultural subterránea fundada en 1987 por miembros sobrevivientes de <a href="feos.html">F.E.O.S.</a> en el ramal sur del alcantarillado porteño. Preserva documentos, objetos y memorias relacionadas con <a href="cloacazo.html">El Cloacazo</a> y sus protagonistas.
           </p>
 
           <h2>Colección permanente</h2>
@@ -531,7 +560,6 @@
     </div>
   </div>
 
-  <!-- TASKBAR -->
   <div id="taskbar">
     <div class="task-btn">⊞ Inicio</div>
     <div class="task-separador"></div>
@@ -544,8 +572,59 @@
 
   <script>
 
-var integridad = parseInt(localStorage.getItem('integridad')) || 71;
-        localStorage.setItem('paginaAnterior', window.location.href);
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+
+    // HISTORIAL
+    var historial = JSON.parse(localStorage.getItem('historial') || '[]');
+    var posicion = parseInt(localStorage.getItem('posicion') || '0');
+    var urlActual = window.location.pathname.split('/').pop();
+
+    if (historial.length === 0 || historial[posicion] !== urlActual) {
+      historial = historial.slice(0, posicion + 1);
+      historial.push(urlActual);
+      posicion = historial.length - 1;
+      localStorage.setItem('historial', JSON.stringify(historial));
+      localStorage.setItem('posicion', posicion);
+    }
+
+    function actualizarBotonesNav() {
+      var btnAtras = document.getElementById('btn-atras');
+      var btnAdelante = document.getElementById('btn-adelante');
+      if (btnAtras) {
+        if (posicion > 0) btnAtras.classList.remove('inactivo');
+        else btnAtras.classList.add('inactivo');
+      }
+      if (btnAdelante) {
+        if (posicion < historial.length - 1) btnAdelante.classList.remove('inactivo');
+        else btnAdelante.classList.add('inactivo');
+      }
+    }
+
+    function navegarAtras() {
+      if (posicion > 0) {
+        posicion--;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    function navegarAdelante() {
+      if (posicion < historial.length - 1) {
+        posicion++;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    actualizarBotonesNav();
     actualizarMonitor(integridad);
     if (integridad <= 0) window.location.href = 'gameover.html';
 
@@ -562,6 +641,48 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
           b.classList.add('vacio');
         }
       });
+    }
+
+    function recibirDano(puntos, callback) {
+      var objetivo = Math.max(0, integridad - puntos);
+      if (audioCtx) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+      var label = document.getElementById('label-integridad');
+      if (label) {
+        label.style.color = '#ff4444';
+        label.style.animation = 'parpadeo-label 0.15s infinite';
+        setTimeout(function() {
+          label.style.animation = '';
+          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
+        }, 600);
+      }
+      var actual = integridad;
+      var intervalo = setInterval(function() {
+        actual--;
+        var valorEl = document.getElementById('integridad-valor');
+        if (valorEl) valorEl.textContent = actual + '%';
+        if (actual <= objetivo) {
+          clearInterval(intervalo);
+          integridad = objetivo;
+          localStorage.setItem('integridad', integridad);
+          actualizarMonitor(integridad);
+          if (integridad <= 0) {
+            setTimeout(function() { window.location.href = 'gameover.html'; }, 600);
+          }
+          if (callback) callback();
+        }
+      }, 40);
     }
 
     // WIDGET EDITOR
@@ -586,17 +707,14 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
       var opciones = document.getElementById('editor-opciones');
       var mensajes = document.getElementById('editor-mensajes');
       opciones.style.display = 'none';
-
       var textos = [
         'La recibí de una fuente anónima.',
         'Estoy investigando a Abel Blanco.',
         '¿Quién sos?'
       ];
-
       var enviado = document.createElement('div');
       enviado.className = 'emsg-usuario';
       mensajes.appendChild(enviado);
-
       escribirLetraPorLetra(enviado, textos[opcion], function() {
         setTimeout(function() {
           var respuesta = document.createElement('div');
@@ -622,30 +740,24 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       canvas.style.display = 'block';
-
       var ctx = canvas.getContext('2d');
       var mouseX = window.innerWidth / 2;
       var mouseY = window.innerHeight / 2;
-
       window.addEventListener('mousemove', function(e) {
         mouseX = e.clientX;
         mouseY = e.clientY;
       });
-
       function dibujar() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = 'rgba(0,0,0,0.97)';
+        ctx.fillStyle = 'rgba(0,0,0,0.97)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                      var gradiente = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 130);
-        gradiente.addColorStop(0,   'rgba(0,0,0,1)');
-        gradiente.addColorStop(1,   'rgba(0,0,0,0)');
-
+        var gradiente = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 130);
+        gradiente.addColorStop(0, 'rgba(0,0,0,1)');
+        gradiente.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.globalCompositeOperation = 'destination-out';
         ctx.fillStyle = gradiente;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalCompositeOperation = 'source-over';
-
         requestAnimationFrame(dibujar);
       }
       dibujar();
@@ -665,64 +777,12 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
         e.preventDefault();
         localStorage.clear();
         localStorage.setItem('integridad', '71');
+        localStorage.setItem('historial', '[]');
+        localStorage.setItem('posicion', '0');
         window.location.href = 'splash.html';
       }
     });
-    // FUNCIÓN DE DAÑO
-    var audioCtx = null;
-    document.addEventListener('click', function() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    });
 
-    function recibirDano(puntos, callback) {
-      var objetivo = Math.max(0, integridad - puntos);
-
-      // SONIDO DE ERROR
-      if (audioCtx) {
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
-        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.4);
-      }
-
-      // PARPADEO ROJO DEL LABEL
-      var label = document.getElementById('label-integridad');
-      if (label) {
-        label.style.color = '#ff4444';
-        label.style.animation = 'parpadeo-label 0.15s infinite';
-        setTimeout(function() {
-          label.style.animation = '';
-          label.style.color = integridad <= 30 ? '#ff4444' : '#33ff33';
-        }, 600);
-      }
-
-      // CUENTA REGRESIVA
-      var actual = integridad;
-      var intervalo = setInterval(function() {
-        actual--;
-        var valorEl = document.getElementById('integridad-valor');
-        if (valorEl) valorEl.textContent = actual + '%';
-        if (actual <= objetivo) {
-          clearInterval(intervalo);
-          integridad = objetivo;
-          localStorage.setItem('integridad', integridad);
-          actualizarMonitor(integridad);
-          if (integridad <= 0) {
-            setTimeout(function() {
-              window.location.href = 'gameover.html';
-            }, 600);
-          }
-          if (callback) callback();
-        }
-      }, 40);
-    }
   </script>
 
 </body>

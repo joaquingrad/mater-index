@@ -51,6 +51,36 @@
       align-items: center;
       user-select: none;
       flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 22px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .nav-btn:disabled, .nav-btn.inactivo {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #nav-izquierda {
+      display: flex;
+      gap: 2px;
+      align-items: center;
     }
 
     .titulo-ventana { letter-spacing: 1px; }

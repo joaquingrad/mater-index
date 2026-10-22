@@ -49,6 +49,36 @@
       align-items: center;
       user-select: none;
       flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 22px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .nav-btn:disabled, .nav-btn.inactivo {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #nav-izquierda {
+      display: flex;
+      gap: 2px;
+      align-items: center;
     }
 
     .titulo-ventana { letter-spacing: 1px; }
@@ -333,7 +363,11 @@
   <!-- VENTANA -->
   <div id="ventana">
     <div id="barra-windows">
-      <span class="titulo-ventana">MATER.INDEX</span>
+      <div id="nav-izquierda">
+        <div class="nav-btn" id="btn-atras" onclick="navegarAtras()">◄</div>
+        <div class="nav-btn" id="btn-adelante" onclick="navegarAdelante()">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
       <div class="botones-windows">
         <div class="btn-win">_</div>
         <div class="btn-win">□</div>
@@ -379,6 +413,40 @@
     });
 
     var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+        // HISTORIAL — 404 no se agrega al historial
+    var historial = JSON.parse(localStorage.getItem('historial') || '[]');
+    var posicion = parseInt(localStorage.getItem('posicion') || '0');
+
+    function actualizarBotonesNav() {
+      var btnAtras = document.getElementById('btn-atras');
+      var btnAdelante = document.getElementById('btn-adelante');
+      if (btnAtras) {
+        if (posicion > 0) btnAtras.classList.remove('inactivo');
+        else btnAtras.classList.add('inactivo');
+      }
+      if (btnAdelante) {
+        if (posicion < historial.length - 1) btnAdelante.classList.remove('inactivo');
+        else btnAdelante.classList.add('inactivo');
+      }
+    }
+
+    function navegarAtras() {
+      if (posicion > 0) {
+        posicion--;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    function navegarAdelante() {
+      if (posicion < historial.length - 1) {
+        posicion++;
+        localStorage.setItem('posicion', posicion);
+        window.location.href = historial[posicion];
+      }
+    }
+
+    actualizarBotonesNav();
     actualizarMonitor(integridad);
 
     function recibirDano(puntos) {
@@ -450,7 +518,7 @@
 
     // Bajar integridad al cargar
     setTimeout(function() {
-      recibirDano(20);
+      recibirDano(1);
     }, 500);
 
     function volver(e) {
