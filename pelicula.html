@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>¿A dónde iremos cuando todos vuelvan? — MATER.INDEX</title>
+  <style>
+
+    @font-face { font-family: "Redaction"; src: url("fonts/Redaction-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction10"; src: url("fonts/Redaction10-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction20"; src: url("fonts/Redaction20-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction35"; src: url("fonts/Redaction35-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction50"; src: url("fonts/Redaction50-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction70"; src: url("fonts/Redaction70-Regular.otf") format("opentype"); }
+    @font-face { font-family: "Redaction100"; src: url("fonts/Redaction100-Regular.otf") format("opentype"); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #2e2e2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Redaction", "Times New Roman", serif;
+      font-size: 16px;
+    }
+
+    #ventana {
+      width: min(75vw, 95vw);
+      height: 85vh;
+      background-color: #eeeae0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+    }
+
+    #barra-windows {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titulo-ventana { letter-spacing: 1px; }
+    .botones-windows { display: flex; gap: 2px; }
+
+    .btn-win {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 18px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: not-allowed;
+    }
+
+    /* --- BOTONES ATRÁS / ADELANTE --- */
+    .nav-historial { display: flex; gap: 2px; align-items: center; }
+
+    .btn-nav {
+      background: #c0c0c0;
+      color: #000000;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      width: 22px;
+      height: 16px;
+      font-size: 9px;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .btn-nav.deshabilitado {
+      color: #808080;
+      cursor: not-allowed;
+    }
+
+    #monitor {
+      position: fixed;
+      top: 72vh;
+      left: calc(50% - 37.5vw - 100px);
+      width: 190px;
+      background-color: #0a0a0a;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.75em;
+      z-index: 500;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #333333;
+      border-bottom: 2px solid #333333;
+    }
+
+    #monitor-barra {
+      background: linear-gradient(to right, #0a0ac9, #1084d0);
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 4px;
+      gap: 3px;
+    }
+
+    .boton-ventana {
+      width: 10px;
+      height: 8px;
+      background: #888888;
+      border: 1px solid #555555;
+      display: inline-block;
+      cursor: not-allowed;
+    }
+
+    #monitor-cuerpo {
+      padding: 12px 8px 20px 8px;
+      color: #33ff33;
+      line-height: 2;
+    }
+
+    #monitor-cuerpo .label {
+      color: #33ff33;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #monitor-cuerpo .valor {
+      color: #33ff33;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    #monitor-cuerpo .barra-integridad {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .bloque-barra {
+      width: 13px;
+      height: 13px;
+      background: #33ff33;
+      display: inline-block;
+    }
+
+    .bloque-barra.vacio {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+    }
+
+    .bloque-barra.critico { background: #ff4444; }
+
+    #monitor-cuerpo .separador {
+      border-top: 1px solid #222222;
+      margin: 6px 0;
+    }
+
+    #esqueleto {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #columna-izquierda {
+      width: 200px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    #columna-izquierda .logo {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #contenedor {
+      flex: 1;
+      background-color: #f8f5e6;
+      padding: 20px 32px;
+      min-width: 0;
+      border-left: 1px solid #cccccc;
+      border-right: 1px solid #cccccc;
+      overflow-y: auto;
+    }
+
+    #mater-label {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #b06fdb;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #cccccc;
+      padding-bottom: 6px;
+    }
+
+    #articulo h1 {
+      font-size: 2.2em;
+      font-weight: normal;
+      border-bottom: 1px solid #aaaaaa;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+      font-family: "Redaction20", serif;
+    }
+
+    .advertencia-articulo {
+      background-color: #ffe0e0;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    #articulo p {
+      line-height: 1.9;
+      margin-bottom: 18px;
+      font-family: "Redaction20", serif;
+    }
+
+    #articulo h2 {
+      font-size: 1.3em;
+      font-weight: normal;
+      border-bottom: 1px solid #cccccc;
+      margin: 20px 0 10px 0;
+      font-family: "Redaction35", serif;
+    }
+
+    #articulo a { color: #0645ad; text-decoration: underline; }
+    #articulo a:visited { color: #551a8b; }
+
+    #infobox {
+      float: right;
+      width: min(240px, 35%);
+      margin: 0 0 16px 16px;
+      max-width: 220px;
+      border: 1px solid #aaaaaa;
+      font-size: 0.82em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    #infobox .infobox-titulo {
+      background-color: #1a1a1a;
+      color: #cccccc;
+      padding: 6px 10px;
+      font-weight: bold;
+    }
+
+    #infobox .pie-foto {
+      padding: 4px 8px;
+      font-size: 0.85em;
+      color: #555555;
+      border-top: 1px solid #dddddd;
+    }
+
+    /* Imagen de baja definición: la fuente ya viene degradada,
+       acá solo se evita que el navegador la suavice */
+    #infobox img.foto-pelicula {
+      width: 100%;
+      height: auto;
+      display: block;
+      image-rendering: pixelated;
+      filter: grayscale(1) contrast(1.15);
+    }
+
+    #infobox table { width: 100%; border-collapse: collapse; }
+
+    #infobox td {
+      padding: 4px 8px;
+      border-top: 1px solid #dddddd;
+      vertical-align: top;
+    }
+
+    #infobox td:first-child {
+      font-weight: bold;
+      width: 38%;
+      color: #666666;
+    }
+
+    #rizoma {
+      clear: both;
+      border: 1px solid #aaaaaa;
+      padding: 12px 16px;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+    }
+
+    #rizoma .rizoma-titulo { font-weight: bold; margin-bottom: 10px; color: #333333; }
+    #rizoma .links { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    #rizoma .links a { color: #0645ad; }
+
+    #categorias {
+      border-top: 1px solid #aaaaaa;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #555555;
+      margin-top: 24px;
+      font-family: "Courier New", Courier, monospace;
+      clear: both;
+    }
+
+    #columna-derecha {
+      width: 160px;
+      flex-shrink: 0;
+      background-color: #eeeae0;
+    }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 4px;
+      z-index: 9999;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78em;
+      user-select: none;
+    }
+
+    .task-btn {
+      height: 24px;
+      padding: 0 8px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #555555;
+      border-bottom: 2px solid #555555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .task-btn.activo {
+      border-top: 2px solid #555555;
+      border-left: 2px solid #555555;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #aaaaaa;
+    }
+
+    .task-separador {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      margin: 0 2px;
+    }
+
+    .task-logo { width: 16px; height: 16px; object-fit: contain; }
+
+    #taskbar-reloj {
+      margin-left: auto;
+      border-top: 1px solid #555555;
+      border-left: 1px solid #555555;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 2px 8px;
+      font-size: 0.82em;
+    }
+
+    @keyframes pulso-alerta {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    @media (max-width: 1400px) {
+      #infobox {
+        float: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 16px 0;
+      }
+      #columna-derecha { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−3 niveles</div>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <div class="nav-historial">
+        <div class="btn-nav deshabilitado" id="btn-atras">◄</div>
+        <div class="btn-nav deshabilitado" id="btn-adelante">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="Imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <img src="Imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>¿A dónde iremos cuando todos vuelvan?</h1>
+          <div class="advertencia-articulo">
+            ⚠ Este artículo está siendo modificado en este momento.
+          </div>
+
+          <div id="infobox">
+            <div class="infobox-titulo">¿A dónde iremos cuando todos vuelvan?</div>
+            <img class="foto-pelicula" src="Imagenes/pelicula.png" alt="Fotograma de la película">
+            <div class="pie-foto">Fotograma de la película, 1942.</div>
+            <table>
+              <tr><td>Dirección</td><td>Pablo Wegener</td></tr>
+              <tr><td>Guion</td><td>Pablo Wegener</td></tr>
+              <tr><td>Protagonistas</td><td>María Eva Duarte<br>Nicolás Fregues</td></tr>
+              <tr><td>País</td><td>Argentina</td></tr>
+              <tr><td>Año</td><td>1942</td></tr>
+              <tr><td>Género</td><td>Ciencia ficción</td></tr>
+            </table>
+          </div>
+
+          <p>
+            <strong><em>¿A dónde iremos cuando todos vuelvan?</em></strong> (1942) es un film argentino de ciencia ficción sobre  Dr. Shvarts Paskudnik. Un cientifico que consigue emitir señales de radio a través del tiempo y comunicar a la humanidad con sus antepasados, con el fin de organizar la resurrección de todos los muertos de la historia y así alcanzar un sueño de justicia para toda la humanidad. Sin embargo, el loco e idealista cientifico muere, junto a su atractiva asistente, aplastado por el aluvión barbárico de las masas que llegan al presente.
+          </p>
+
+          <h2>Críticas retrospectivas</h2>
+          <p>
+            La película sufrió una gran polémica a causa de la muerte en el set de la actriz <a href="eva_duarte.html">María Eva Duarte</a>. Esto tomó toda la atención de la prensa durante su estreno, pero más adelante llegó a ser valorada como la inauguración de la ciencia ficción en el cine nacional y rescatada por su innovación formal en el campo cinematográfico. Sin embargo, la película fue leída por críticos en décadas posteriores como una alegoría clasista de la recepción de la migración interna que experimentó la ciudad de Buenos Aires durante la década del 40. La película, entonces, es leída como una advertencia de los peligros de traer a poblaciones campesinas y primitivas a la metrópolis. No queda inadvertida la caracterización antisemita del Dr. Shvarts Paskudnik.
+          </p>
+
+          <div id="rizoma">
+            <div class="rizoma-titulo">RIZOMA DE ENLACES · PROFUNDIDAD −3</div>
+            <div class="links">
+              <a href="eva_duarte.html">María Eva Duarte</a>
+              <a href="cosmismo.html">Cosmismo</a>
+              <a href="byzantov.html">Sergei Konstantínovich Byzantov</a>
+              
+            </div>
+          </div>
+
+          <div id="categorias">
+            Categorías: Cine argentino · Ciencia ficción · Películas de 1942 · Niveles −2 a −4 
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="Imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script>
+    var PAGINA_ACTUAL = 'pelicula.html';
+
+    // AUDIO (se activa con el primer movimiento del mouse)
+    var audioCtx = null;
+    document.addEventListener('mousemove', function iniciarAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.removeEventListener('mousemove', iniciarAudio);
+      }
+    });
+
+    // INTEGRIDAD
+    var integridad = parseInt(localStorage.getItem('integridad')) || 71;
+    actualizarMonitor(integridad);
+    if (integridad <= 0) window.location.href = 'gameover.html';
+
+    function actualizarMonitor(porcentaje) {
+      var valor = document.getElementById('integridad-valor');
+      if (valor) valor.textContent = porcentaje + '%';
+      var bloques = document.querySelectorAll('.bloque-barra');
+      var llenos = Math.round(porcentaje / 10);
+      bloques.forEach(function(b, i) {
+        b.className = 'bloque-barra';
+        if (i < llenos) {
+          if (porcentaje <= 30) b.classList.add('critico');
+        } else {
+          b.classList.add('vacio');
+        }
+      });
+    }
+
+    // PÁGINA ANTERIOR (la usa 404.html para el botón "volver")
+    localStorage.setItem('paginaAnterior', window.location.href);
+
+    // HISTORIAL ATRÁS / ADELANTE
+    var historial = [];
+    try { historial = JSON.parse(localStorage.getItem('historial')) || []; } catch (e) { historial = []; }
+    var posicion = parseInt(localStorage.getItem('posicion'));
+    if (isNaN(posicion)) posicion = historial.length - 1;
+
+    // Si llegamos por un link normal (no por ◄ ►), se descarta el "futuro" y se agrega esta página
+    if (historial[posicion] !== PAGINA_ACTUAL) {
+      historial = historial.slice(0, posicion + 1);
+      historial.push(PAGINA_ACTUAL);
+      posicion = historial.length - 1;
+      localStorage.setItem('historial', JSON.stringify(historial));
+      localStorage.setItem('posicion', posicion);
+    }
+
+    var btnAtras = document.getElementById('btn-atras');
+    var btnAdelante = document.getElementById('btn-adelante');
+
+    if (posicion > 0) btnAtras.classList.remove('deshabilitado');
+    if (posicion < historial.length - 1) btnAdelante.classList.remove('deshabilitado');
+
+    btnAtras.addEventListener('click', function() {
+      if (posicion <= 0) return;
+      localStorage.setItem('posicion', posicion - 1);
+      window.location.href = historial[posicion - 1];
+    });
+
+    btnAdelante.addEventListener('click', function() {
+      if (posicion >= historial.length - 1) return;
+      localStorage.setItem('posicion', posicion + 1);
+      window.location.href = historial[posicion + 1];
+    });
+
+    // RELOJ
+    function actualizarReloj() {
+      var ahora = new Date();
+      var h = ahora.getHours().toString().padStart(2, '0');
+      var m = ahora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('taskbar-reloj').textContent = h + ':' + m;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+
+    // CTRL+R: REINICIO GLOBAL
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        localStorage.clear();
+        localStorage.setItem('integridad', '71');
+        window.location.href = 'splash.html';
+      }
+    });
+  </script>
+
+</body>
+</html>
