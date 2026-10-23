@@ -411,6 +411,59 @@
       }
       #columna-derecha { display: none; }
     }
+        /* --- WIDGET MENSAJITO (director de tesis) --- */
+    #widget-mensajito {
+      position: fixed; bottom: 48px; right: calc(50% - 37.5vw - 10px);
+      width: 280px; background: #F0FBF6; border-radius: 16px 16px 0 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px; z-index: 8000; display: none; flex-direction: column; overflow: hidden;
+    }
+    #widget-mensajito.visible { display: flex; animation: entrar-widget 0.4s ease forwards; }
+    @keyframes entrar-widget {
+      0% { transform: translateX(120%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    #widget-header {
+      background: linear-gradient(to right, #134E3A, #22B07D); color: #fff;
+      padding: 10px 14px; display: flex; justify-content: space-between;
+      align-items: center; font-weight: bold; font-size: 13px;
+    }
+    #widget-header .punto {
+      width: 8px; height: 8px; background: #33ff33; border-radius: 50%;
+      display: inline-block; margin-right: 6px;
+    }
+    #widget-mensajes {
+      padding: 12px; display: flex; flex-direction: column; gap: 8px;
+      max-height: 180px; overflow-y: auto;
+    }
+    .wmsg-recibido {
+      background: #fff; border-radius: 4px 12px 12px 12px; padding: 8px 12px;
+      color: #1a1a1a; max-width: 90%; line-height: 1.5;
+    }
+    .wmsg-enviado {
+      background: #22B07D; border-radius: 12px 4px 12px 12px; padding: 8px 12px;
+      color: #fff; max-width: 90%; align-self: flex-end; line-height: 1.5;
+    }
+    #widget-opciones { padding: 8px 12px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+    .wopcion {
+      background: #fff; border: 1px solid #22B07D; border-radius: 20px; padding: 6px 14px;
+      color: #134E3A; font-size: 12px; cursor: pointer; text-align: left; font-family: inherit;
+    }
+    .wopcion:hover { background: #F0FBF6; }
+        #widget-mensajito.widget-glitch { animation: widget-glitch-anim 0.15s infinite; }
+    @keyframes widget-glitch-anim {
+      0%   { transform: skewX(0deg);  opacity: 1;   filter: none; }
+      25%  { transform: skewX(-8deg); opacity: 0.6; filter: hue-rotate(90deg); }
+      50%  { transform: skewX(6deg);  opacity: 0.3; filter: invert(1); }
+      75%  { transform: skewX(-4deg); opacity: 0.7; filter: hue-rotate(180deg); }
+      100% { transform: skewX(0deg);  opacity: 1;   filter: none; }
+    }
+
+    /* Puntos de verdad (solo modo desarrollo) */
+    #dev-verdad { display: none; gap: 3px; align-items: center; margin-left: 8px; }
+    .dev-punto { width: 8px; height: 8px; background: #1a1a1a; border: 1px solid #555555; }
+    .dev-punto.lleno { background: #33ff33; border-color: #33ff33; }
   </style>
 </head>
 <body>
@@ -501,7 +554,7 @@
           </p>
           <h2>Vínculo con el sistema DUARTE</h2>
           <p>
-            A causa de la llamativa coincidencia con el nombre del sistema DUARTE (Directorio Unificado de Archivos y Registros Telegráficos del Estado), existen teorías sobre una posible relación entre la trágica muerte de Evita y Ariel Kon, fundador del sistema DUARTE, quien se desempeñó como diseñador escenográfico en <em><a href="pelicula.html">¿A dónde iremos cuando todos vuelvan?</a></em> (1942).
+            A causa de la llamativa coincidencia con el nombre del sistema <a href="duarte.html">DUARTE</a> (Directorio Unificado de Archivos y Registros Telegráficos del Estado), existen teorías sobre una posible relación entre la trágica muerte de Evita y Ariel Kon, fundador del sistema DUARTE, quien se desempeñó como diseñador escenográfico en <em><a href="pelicula.html">¿A dónde iremos cuando todos vuelvan?</a></em> (1942).
           </p>
           <div id="rizoma">
             <div class="rizoma-titulo">RIZOMA DE ENLACES · PROFUNDIDAD −3</div>
@@ -509,7 +562,7 @@
               <a href="pelicula.html">¿A dónde iremos cuando todos vuelvan?</a>
               <a href="cosmismo.html">Cosmismo</a>
               <a href="byzantov.html">Sergei Konstantínovich Byzantov</a>
-              <a href="#" onclick="return false;">Más profundo</a>
+              
             </div>
           </div>
 
@@ -524,6 +577,17 @@
     </div>
   </div>
 
+    <!-- WIDGET MENSAJITO -->
+  <div id="widget-mensajito">
+    <div id="widget-header">
+      <div><span class="punto"></span>Dr. Ferreyra</div>
+      <div style="font-size:11px; font-weight:normal; opacity:0.8;">mensajito</div>
+    </div>
+    <div id="widget-mensajes">
+      <div class="wmsg-recibido">¿Cómo viene el material de la enciclopedia?</div>
+    </div>
+    <div id="widget-opciones"></div>
+  </div>
   <!-- TASKBAR -->
   <div id="taskbar">
     <div class="task-btn">⊞ Inicio</div>
@@ -533,6 +597,7 @@
     </div>
     <div class="task-btn" id="task-sys">!</div>
     <div id="taskbar-reloj">00:00</div>
+        <div id="dev-verdad"></div>
   </div>
 
   <script>
@@ -622,7 +687,101 @@
         window.location.href = 'splash.html';
       }
     });
-  </script>
+        // PUNTOS DE VERDAD (ocultos; Ctrl+R los borra porque limpia localStorage)
+    var UMBRAL_VERDAD = 5;
+    function verdadActual() { return parseInt(localStorage.getItem('verdad')) || 0; }
+    function sumarVerdad(puntos, clave) {
+      if (clave) {
+        if (localStorage.getItem('v_' + clave)) return;
+        localStorage.setItem('v_' + clave, '1');
+      }
+      localStorage.setItem('verdad', verdadActual() + puntos);
+      console.log('verdad:', verdadActual(), '/', UMBRAL_VERDAD);
+            console.log('verdad:', verdadActual(), '/', UMBRAL_VERDAD);
+      actualizarPuntosDev();
+    }
 
+    // CHAT CON EL DIRECTOR
+    function escribirTexto(el, texto, cb) {
+      var i = 0;
+      var t = setInterval(function() {
+        el.textContent += texto[i]; i++;
+        document.getElementById('widget-mensajes').scrollTop = 9999;
+        if (i >= texto.length) { clearInterval(t); if (cb) cb(); }
+      }, 35);
+    }
+
+    function decir(texto, clase, cb) {
+      var d = document.createElement('div');
+      d.className = clase;
+      document.getElementById('widget-mensajes').appendChild(d);
+      escribirTexto(d, texto, cb);
+    }
+
+    function mostrarOpciones(lista) {
+      var cont = document.getElementById('widget-opciones');
+      cont.innerHTML = '';
+      lista.forEach(function(o) {
+        var b = document.createElement('button');
+        b.className = 'wopcion';
+        b.textContent = '"' + o.texto + '"';
+        b.onclick = function() {
+          cont.innerHTML = '';
+          decir(o.texto, 'wmsg-enviado', o.siguiente);
+        };
+        cont.appendChild(b);
+      });
+    }
+
+       function cerrarChat() {
+      var w = document.getElementById('widget-mensajito');
+      w.classList.add('widget-glitch');
+      setTimeout(function() { w.style.display = 'none'; }, 800);
+    }
+
+    function pregunta2() {
+      decir('¿1942? jaja ¿Qué estas leyendo?', 'wmsg-recibido', function() {
+        mostrarOpciones([
+          { texto: 'Creo que estoy leyendo textos de una realidad paralela.',
+            siguiente: function() {
+              sumarVerdad(2, 'eva');
+              decir('...Mandame esas páginas. Y no escribas más por acá.', 'wmsg-recibido', function() {
+                setTimeout(cerrarChat, 1500);
+              });
+            } },
+          { texto: 'Debe ser un error de la enciclopedia.',
+            siguiente: function() { setTimeout(cerrarChat, 800); } }
+        ]);
+      });
+    }
+
+    if (!localStorage.getItem('v_eva')) {
+      setTimeout(function() {
+        document.getElementById('widget-mensajito').classList.add('visible');
+        setTimeout(function() {
+          mostrarOpciones([
+            { texto: 'En esta enciclopedia Eva Duarte murió en 1942.', siguiente: pregunta2 },
+            { texto: 'Todavía lo estoy leyendo.', siguiente: function() { setTimeout(cerrarChat, 800); } }
+          ]);
+        }, 1200);
+      }, 5000);
+    }
+        // MODO DESARROLLO: abrí cualquier página con ?dev al final de la URL (ej: eva.html?dev)
+    if (location.search.indexOf('dev') > -1) sessionStorage.setItem('dev', '1');
+
+    function actualizarPuntosDev() {
+      var cont = document.getElementById('dev-verdad');
+      if (!cont || sessionStorage.getItem('dev') !== '1') return;
+      cont.style.display = 'flex';
+      cont.innerHTML = '';
+      for (var i = 0; i < UMBRAL_VERDAD; i++) {
+        var p = document.createElement('div');
+        p.className = 'dev-punto' + (i < verdadActual() ? ' lleno' : '');
+        cont.appendChild(p);
+      }
+    }
+    actualizarPuntosDev();
+  </script>
+<script src="verdad.js"></script>
 </body>
 </html>

@@ -270,7 +270,7 @@
       { texto: "RAMAL SUR · NIVEL −7", clase: "rojo", size: "0.9em" },
       { texto: "LA VICTORIA DEL PROLETARIADO SE EXTIENDE MÁS ALLÁ DEL ESPACIO Y EL TIEMPO", clase: "tenue", size: "0.65em" },
       { texto: "LA VICTORIA DEL PROLETARIADO SE EXTIENDE MÁS ALLÁ DEL ESPACIO Y EL TIEMPO", clase: "tenue", size: "0.6em" },
-      { texto: "F.E.O.S. · FUNDADA 15/02/1983", clase: "tenue", size: "0.7em" },
+      { texto: "F.E.O.S. · FUNDADA 15/02/1963", clase: "tenue", size: "0.7em" },
       { texto: "FLORENCIO SCHMIT: PRESENTE", clase: "rojo", size: "0.9em" },
       { texto: "INTEGRIDAD COMPROMETIDA", clase: "rojo", size: "0.8em" },
       { texto: "INTEGRIDAD COMPROMETIDA", clase: "tenue", size: "0.65em" },
@@ -378,10 +378,29 @@
     }, 7000);
   </script>
 
-  <div id="nota-autor">
-    <strong>Modelo representativo completado</strong>
-    Pulse Ctrl+R para reiniciar el modelo.
-  </div>
+ 
+<script>
+  // BOTÓN "VOLVER A EMPEZAR" (misma función que Ctrl+R)
+  function reiniciarModelo() {
+    localStorage.clear();
+    localStorage.setItem('integridad', '71');
+    window.location.href = 'splash.html';
+  }
 
+  setTimeout(function() {
+    var btn = document.createElement('button');
+    btn.textContent = '[ volver a empezar ]';
+    btn.onclick = reiniciarModelo;
+    btn.style.cssText =
+      'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:99999;' +
+      'background:#c0c0c0; color:#000; cursor:pointer;' +
+      'font-family:"Courier New",monospace; font-size:14px; font-weight:bold;' +
+      'padding:6px 14px; opacity:0; transition:opacity 1.5s;' +
+      'border-top:2px solid #fff; border-left:2px solid #fff;' +
+      'border-right:2px solid #555; border-bottom:2px solid #555;';
+    document.body.appendChild(btn);
+    setTimeout(function() { btn.style.opacity = '1'; }, 50);
+  }, 9000);
+</script>
   </body>
 </html>

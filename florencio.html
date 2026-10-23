@@ -512,7 +512,7 @@
             </div>
             <table>
               <tr><td>Alias</td><td>El Feo</td></tr>
-              <tr><td>Cargo</td><td>Secretario General · F.E.O.S.</td></tr>
+              <tr><td>Cargo</td><td>Secretario General desde 1969 · F.E.O.S.</td></tr>
               <tr><td>Facción</td><td><span class="redactado">█████████</span></td></tr>
               <tr><td>Estado</td><td><span class="redactado">████████</span></td></tr>
               <tr><td>Afiliación</td><td><a href="FEOS.html">F.E.O.S.</a></td></tr>
@@ -523,7 +523,8 @@
       
           <p>
                       <p>
-            Florencio Schmit (<a href="404.html">Asunción</a>, Paraguay, 4 de noviembre de 1945 – <span class="redactado">██████████████████</span>) fue un trabajador del sistema de alcantarillado de la Ciudad Autónoma de Buenos Aires y dirigente sindical que se desempeñó como Secretario General de la <a href="FEOS.html">Federación de Obreros y Especialistas Subterráneos</a> (F.E.O.S.) entre <span class="redactado">████████</span> y <span class="redactado">████████</span>. Conocido en el ámbito gremial bajo el alias <strong>El Feo</strong>, lideró una facción interna orientación ideológica <span class="redactado">████████████████████████████████████████</span>. 
+            Florencio Schmit (<a href="404.html">Asunción</a>, Paraguay, 4 de noviembre de 1945 – <span class="redactado">██████████████████</span>) fue un trabajador del sistema de alcantarillado de la Ciudad Autónoma de Buenos Aires y dirigente sindical que se desempeñó como Secretario General de la <a href="FEOS.html">Federación de Obreros y Especialistas Subterráneos</a> (F.E.O.S.) entre <span class="redactado">████████</span> y <span class="redactado">████████</span>. Conocido en el ámbito gremial bajo el alias <strong>El Feo</strong>, lideró una facción interna orientación ideológica <span class="redactado">████████████████████████████████████████</span> 
+acusando al movimiento de reunificación ontológica como “una fantasía de <a href="pelicula.html">Paskudnikeana</a>”.
           </p>
           </p>
 
@@ -834,6 +835,36 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
       }, 40);
     }
  </script>
-
+<script src="verdad.js"></script>
+<script>
+  // Espera a que se cierren todos los popups visibles, y recién ahí lanza el chat
+  var esperaPopups = setInterval(function() {
+    var todos = document.querySelectorAll('.popup-espiral');
+    if (todos.length < totalPopups) return;
+    var visibles = 0;
+    todos.forEach(function(p) {
+      if (p.style.display !== 'none') visibles++;
+    });
+    if (visibles === 0) {
+      clearInterval(esperaPopups);
+      iniciarChatDirector({
+        clave: 'florencio',
+        retardo: 1500,
+        inicio: '¡no me dejes colgado!',
+        opciones: [
+          { texto: 'Encontre algo sobre Schmit... algo de una interna con un  movimiento de "reunificación ontológica".',
+            respuesta: '¿Reunificación ontológica? No sé qué es eso. ¿Un partido?',
+            opciones: [
+              { texto: 'Un movimiento que quería reunir todas las líneas de tiempo.',
+                puntos: 2,
+                respuesta: 'Ya me preocupás. Mandame lo que tengas y no abras nada más.' },
+              { texto: 'Algo así como un grupo de estudio.' }
+            ] },
+          { texto: 'Todavía lo estoy leyendo.' }
+        ]
+      });
+    }
+  }, 500);
+</script>
 </body>
 </html>

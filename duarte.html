@@ -465,7 +465,7 @@
               <tr><td>Nombre</td><td>Directorio Unificado de Archivos y Registros Telegráficos del Estado</td></tr>
               <tr><td>Origen</td><td>1945</td></tr>
               <tr><td>Primera conexión</td><td>Clorinda (Formosa) – Capital Federal</td></tr>
-              <tr><td>Fundador</td><td><a href="ariel_kon.html">Ariel Kon</a></td></tr>
+              <tr><td>Fundador</td><td> <a href="404.html">Ariel Kon</a></td></tr>
               <tr><td>Estado</td><td>En desuso desde 1969</td></tr>
             </table>
           </div>
@@ -487,8 +487,8 @@
             <div class="links">
               <a href="eva.html">Evita Duarte</a>
               <a href="pelicula.html">¿A dónde iremos cuando todos vuelvan?</a>
-              <a href="ariel_kon.html">Ariel Kon</a>
-              <a href="#" onclick="return false;">Más profundo</a>
+              <a href="404.html">Ariel Kon</a>
+              
             </div>
           </div>
 
@@ -602,6 +602,24 @@
       }
     });
   </script>
-
+<script src="verdad.js"></script>
+<script>
+  iniciarChatDirector({
+    clave: 'duarte',
+    retardo: 6000,
+    inicio: 'Estuve buscando el origen de Internet para tu bibliografía.',
+    opciones: [
+      { texto: 'Esta enciclopedia dice que Internet nació en Formosa, en 1945.',
+        respuesta: 'jaja! imaginate, internet inicio recien en el 69',
+        opciones: [
+          { texto: 'Dice que en 1969 el sistema colapsó por mensajes que nadie pudo descifrar.',
+            puntos: 2,
+            respuesta: 'que coincidencia... no te lo estaras creyendo, ¿no?.' },
+          { texto: 'Debe ser una broma de la enciclopedia.' }
+        ] },
+      { texto: 'Todavía lo estoy leyendo.' }
+    ]
+  });
+</script>
 </body>
 </html>
