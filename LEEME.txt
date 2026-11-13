@@ -1,0 +1,10 @@
+19 ARTICULOS NUEVOS - MATER.INDEX
+
+INSTALACION
+Copiar los 19 .html, micro.css y micro.js a la carpeta del proyecto (junto a splash.html).
+micro.css y micro.js reemplazan a los anteriores si ya existen.
+
+FOTOS
+Cada pagina busca su foto en Imagenes\<nombre>.png (.png, .jpg, .jpeg, .webp o .gif; minusculas, sin tildes).
+Si falta, la ficha se oculta sola.
+Nombres: anos_monstruos.png, campamento_oferta_y_demanda.png, cosmismo.png, datos_salvajes.png, diseno_de_oscuridad_y_silencio.png, el_ojo_humano.png, esclavitud_etica.png, genealogia_del_descanso.png, los_alambres.png, moonwashing.png, morir_afuera.png, nivel_vidrio.png, plutonium_jazz.png, que_hora_es_alla.png, radio_tormenta.png, sol_argentino_rodriguez.png, variante_reconquista.png, videos_masculinos.png, washington.png
