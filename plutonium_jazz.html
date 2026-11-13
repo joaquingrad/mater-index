@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Plutonium Jazz — MATER.INDEX</title>
+  <link rel="stylesheet" href="micro.css">
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra vacio"></span><span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−3 niveles</div>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <div class="nav-historial">
+        <div class="btn-nav deshabilitado" id="btn-atras">◄</div>
+        <div class="btn-nav deshabilitado" id="btn-adelante">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="Imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <div class="nav-lateral"><a href="#" onclick="irAzar(event)">Artículo aleatorio</a></div>
+        <img src="Imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Plutonium Jazz</h1>
+
+          <div id="infobox">
+            <div class="infobox-titulo">PLUTONIUM JAZZ</div>
+            <div class="foto"><img src="Imagenes/plutonium_jazz.png" alt="" style="width:100%; height:auto; display:block; image-rendering:pixelated; filter:grayscale(1) contrast(1.15);" onerror="var n=+(this.dataset.n||0),x=['jpg','jpeg','webp','gif','PNG','JPG','JPEG'];if(n<x.length){this.dataset.n=n+1;this.src='Imagenes/plutonium_jazz.'+x[n];}else{var b=document.getElementById('infobox');this.parentNode.remove();if(!b.querySelector('table'))b.remove();}"><div class="pie">Bailarinas en un club de jazz de plutonio, alrededor de 1942.</div></div>
+          </div>
+
+          <p>El <strong>Plutonium Jazz</strong> fue un género musical único dentro del jazz que ganó popularidad durante la década de 1940, en plena era nuclear.</p>
+          <p>Se caracterizaba por músicos que tocaban el bajo y sincronizaban sus ritmos con los chasquidos rítmicos de un contador Geiger.</p>
+          <p>Sin embargo, el género tuvo una vida breve debido a problemas de salud. Los músicos y los clientes de los clubes comenzaron a experimentar intoxicación por radiación, lo que llevó a la prohibición de las actuaciones de este género y la clausura de varios establecimientos.</p>
+
+          <div id="rizoma">
+            <div class="rizoma-titulo">ENLACES · PROFUNDIDAD −3</div>
+            <div class="links">
+              <a href="radio_tormenta.html">Radio Tormenta</a>
+              <a href="nivel_vidrio.html">Nivel Vidrio</a>
+              <a href="datos_salvajes.html">Datos salvajes</a>
+            </div>
+          </div>
+
+          <div id="categorias">
+            Categorías: Música · Géneros · Niveles −2 a −4
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="Imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script src="micro.js"></script>
+  <script src="verdad.js"></script>
+</body>
+</html>

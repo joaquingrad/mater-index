@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Cosmismo — MATER.INDEX</title>
+  <link rel="stylesheet" href="micro.css">
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra vacio"></span><span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−3 niveles</div>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <div class="nav-historial">
+        <div class="btn-nav deshabilitado" id="btn-atras">◄</div>
+        <div class="btn-nav deshabilitado" id="btn-adelante">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="Imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <div class="nav-lateral"><a href="#" onclick="irAzar(event)">Artículo aleatorio</a></div>
+        <img src="Imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Cosmismo</h1>
+
+          <div id="infobox">
+            <div class="infobox-titulo">COSMISMO</div>
+            <div class="foto"><img src="Imagenes/cosmismo.png" alt="" style="width:100%; height:auto; display:block; image-rendering:pixelated; filter:grayscale(1) contrast(1.15);" onerror="var n=+(this.dataset.n||0),x=['jpg','jpeg','webp','gif','PNG','JPG','JPEG'];if(n<x.length){this.dataset.n=n+1;this.src='Imagenes/cosmismo.'+x[n];}else{var b=document.getElementById('infobox');this.parentNode.remove();if(!b.querySelector('table'))b.remove();}"></div>
+            <table><tr><td>Origen</td><td>Rusia, principios del siglo XX</td></tr><tr><td>Figura clave</td><td>Konstantín Tsiolkovski</td></tr><tr><td>Idea central</td><td>Causa Común</td></tr></table>
+          </div>
+
+          <p>El <strong>Cosmismo</strong> es una corriente cultural originada en Rusia a principios del siglo XX que proyecta a la humanidad conectada en una Causa Común hacia la conquista del espacio y a la solución tecnológica del problema de la muerte.</p>
+          <p>Esta doble lucha contra la entropía propone que el socialismo no debiera darse únicamente en el espacio, sino que también en el tiempo.</p>
+          <p>El Cosmismo se opone a la idea de Progreso, considerando que, en el proyecto progresista, los habitantes del tiempo presente y pasado son clases explotadas por los privilegiados habitantes del futuro.</p>
+          <p>El Cosmismo especula los medios económicos, sociales y técnicos que permitan resucitar por medios tecnológicos a todos los seres humanos que alguna vez poblaron la tierra. Pero claro, en esta era mesiánica (t'chiyat hametim) en la que la humanidad toda se reúne finalmente: ¿dónde vivirá esta humanidad reunida, de esta tierra ahora superpoblada?</p>
+          <p>La segunda pata del pensamiento Cosmista es precisamente la completitud del proyecto de lo humano expandido hacia la conquista del espacio. No será nuestra lejana prole la que alcanzará los cielos, sino nuestros ancestros.</p>
+          <p>Esta corriente fue fundamental para el desarrollo de la ciencia soviética, integrando el movimiento cosmista figuras claves como Konstantín Tsiolkovski, padre de la cosmonáutica.</p>
+          <h2>Desarrollo en la Argentina</h2>
+          <p><span class="redactado">████ █████ █████ █████ ██████ ███████ ███████ █████ ███ ████████ ████████ █████ ████ ██████ █████ ██████ ████ █████ █████ █████ ██████ ███████ ███████ █████ ███ ████████ ████████ █████ ████ ██████</span></p>
+
+          <div id="rizoma">
+            <div class="rizoma-titulo">ENLACES · PROFUNDIDAD −3</div>
+            <div class="links">
+              <a href="byzantov.html">Sergei Konstantínovich Byzantov</a>
+              <a href="pelicula.html">¿A dónde iremos cuando todos vuelvan?</a>
+              <a href="esclavitud_etica.html">Esclavitud ética</a>
+              <a href="moonwashing.html">Moonwashing</a>
+            </div>
+          </div>
+
+          <div id="categorias">
+            Categorías: Corrientes culturales · Rusia · Cosmonáutica · Niveles −2 a −4
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="Imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script src="micro.js"></script>
+  <script src="verdad.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, shrink-to-fit=yes">
+  <title>Los años monstruos — MATER.INDEX</title>
+  <link rel="stylesheet" href="micro.css">
+</head>
+<body>
+
+  <!-- MONITOR SYS -->
+  <div id="monitor">
+    <div id="monitor-barra">
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+      <span class="boton-ventana"></span>
+    </div>
+    <div id="monitor-cuerpo">
+      <div class="label" id="label-integridad">Integridad del sistema</div>
+      <div class="valor" id="integridad-valor">71%</div>
+      <div class="barra-integridad">
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra"></span><span class="bloque-barra"></span>
+        <span class="bloque-barra"></span><span class="bloque-barra vacio"></span><span class="bloque-barra vacio"></span>
+        <span class="bloque-barra vacio"></span>
+      </div>
+      <div class="separador"></div>
+      <div class="label">Profundidad</div>
+      <div class="valor">−3 niveles</div>
+    </div>
+  </div>
+
+  <!-- VENTANA PRINCIPAL -->
+  <div id="ventana">
+    <div id="barra-windows">
+      <div class="nav-historial">
+        <div class="btn-nav deshabilitado" id="btn-atras">◄</div>
+        <div class="btn-nav deshabilitado" id="btn-adelante">►</div>
+        <span class="titulo-ventana" style="margin-left:6px;">MATER.INDEX</span>
+      </div>
+      <div class="botones-windows">
+        <div class="btn-win">_</div>
+        <div class="btn-win">□</div>
+        <div class="btn-win">×</div>
+      </div>
+    </div>
+
+    <div id="esqueleto">
+      <div id="columna-izquierda">
+        <img src="Imagenes/logo1.png" alt="MATER.INDEX" class="logo">
+        <div class="nav-lateral"><a href="#" onclick="irAzar(event)">Artículo aleatorio</a></div>
+        <img src="Imagenes/peligro.gif" alt="" style="width:100%; height:auto; display:block;">
+      </div>
+
+      <div id="contenedor">
+        <div id="mater-label">MATER.INDEX</div>
+        <div id="articulo">
+
+          <h1>Los años monstruos</h1>
+
+          <div id="infobox">
+            <div class="infobox-titulo">LOS AÑOS MONSTRUOS</div>
+            <div class="foto"><img src="Imagenes/anos_monstruos.png" alt="" style="width:100%; height:auto; display:block; image-rendering:pixelated; filter:grayscale(1) contrast(1.15);" onerror="var n=+(this.dataset.n||0),x=['jpg','jpeg','webp','gif','PNG','JPG','JPEG'];if(n<x.length){this.dataset.n=n+1;this.src='Imagenes/anos_monstruos.'+x[n];}else{var b=document.getElementById('infobox');this.parentNode.remove();if(!b.querySelector('table'))b.remove();}"></div>
+          </div>
+
+          <p>Los <strong>años monstruos</strong> son el período comprendido entre <a href="cloacazo.html">El Cloacazo</a> (1963) y las interferencias de 1969.</p>
+
+          <div id="rizoma">
+            <div class="rizoma-titulo">ENLACES · PROFUNDIDAD −3</div>
+            <div class="links">
+              <a href="cloacazo.html">El Cloacazo</a>
+              <a href="feos.html">F.E.O.S.</a>
+              <a href="duarte.html">DUARTE (Internet)</a>
+              <a href="radio_tormenta.html">Radio Tormenta</a>
+            </div>
+          </div>
+
+          <div id="categorias">
+            Categorías: Historia · Períodos · Niveles −2 a −4
+          </div>
+
+        </div>
+      </div>
+
+      <div id="columna-derecha"></div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="taskbar">
+    <div class="task-btn">⊞ Inicio</div>
+    <div class="task-separador"></div>
+    <div class="task-btn activo">
+      <img src="Imagenes/logo1.png" class="task-logo" alt=""> MATER.INDEX
+    </div>
+    <div class="task-btn" id="task-sys">!</div>
+    <div id="taskbar-reloj">00:00</div>
+  </div>
+
+  <script src="micro.js"></script>
+  <script src="verdad.js"></script>
+</body>
+</html>
