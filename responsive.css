@@ -1,0 +1,124 @@
+/* =====================================================================
+   MATER.INDEX · responsive.css
+   Capa dinámica compartida por todas las páginas. Se carga DESPUÉS del
+   CSS propio de cada página. En pantallas anchas (más de 1400 px) no
+   cambia nada: el diseño es el de siempre. Por debajo, el contenido se
+   adapta al ancho real de la pantalla (monitor 4:3, notebook, tablet, celular).
+   ===================================================================== */
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+img { max-width: 100%; }
+
+/* ---------- Fotos de la ficha: nunca más grandes que la pantalla ---------- */
+#infobox .foto img,
+#infobox > img { max-width: 100%; height: auto; }
+
+/* ---------- 1400 px o menos (notebook, monitor 4:3 grande) ---------- */
+@media (max-width: 1400px) {
+  /* la ficha vuelve a flotar al costado en vez de ocupar todo el ancho */
+  #infobox {
+    float: right;
+    width: 36%;
+    max-width: 280px;
+    min-width: 200px;
+    margin: 0 0 16px 18px;
+  }
+}
+
+/* ---------- 1200 px o menos ---------- */
+@media (max-width: 1200px) {
+  #ventana { width: 94vw !important; height: calc(100vh - 52px) !important; }
+  #columna-izquierda { width: 150px; padding: 10px 8px; }
+  #contenedor { padding: 16px 22px; }
+  #columna-derecha { display: none; }
+
+  /* el monitor de integridad se acomoda abajo a la izquierda, más chico */
+  #monitor {
+    left: 6px !important;
+    top: auto !important;
+    bottom: 40px !important;
+    width: 150px !important;
+    font-size: 0.66em !important;
+  }
+  #monitor-cuerpo { padding: 8px 6px 10px 6px; line-height: 1.7; }
+  .bloque-barra { width: 10px; height: 10px; }
+
+  /* chats flotantes */
+  #widget-mensajito, #widget-editor {
+    right: 10px !important;
+    bottom: 44px !important;
+    width: min(280px, 90vw) !important;
+  }
+}
+
+/* ---------- 900 px o menos (monitor 4:3 chico, tablet vertical) ---------- */
+@media (max-width: 900px) {
+  #columna-izquierda { display: none; }
+  #contenedor { padding: 14px 18px 170px 18px; border-left: none; border-right: none; }
+  #monitor { width: 124px !important; font-size: 0.6em !important; }
+  #articulo h1 { font-size: 1.9em; }
+  #articulo p { line-height: 1.75; }
+  #mater-label { font-size: 1.1em; letter-spacing: 3px; }
+}
+
+/* ---------- 700 px o menos: la ficha ocupa el ancho, con la foto acotada ---------- */
+@media (max-width: 700px) {
+  #infobox { float: none; width: 100%; max-width: 100%; min-width: 0; margin: 0 0 16px 0; }
+  #infobox .foto { text-align: center; background: #f1eee2; }
+  #infobox .foto img { width: auto; max-width: 100%; max-height: 38vh; margin: 0 auto; object-fit: contain; }
+  #infobox > img { width: auto; max-width: 100%; max-height: 38vh; display: block; margin: 0 auto; }
+}
+
+/* ---------- 640 px o menos (celular) ---------- */
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  #ventana { width: 100vw !important; height: calc(100vh - 32px) !important; border-left: none; border-right: none; }
+  #contenedor { padding: 12px 14px; }
+  #articulo h1 { font-size: 1.6em; }
+  #articulo h2 { font-size: 1.15em; }
+  #rizoma { padding: 10px 12px; }
+  #rizoma .links { gap: 6px 12px; }
+
+  /* el monitor queda reducido a dos cifras en el rincón */
+  #monitor { left: auto !important; right: 6px !important; bottom: 38px !important; width: auto !important; }
+  #monitor-barra { display: none; }
+  #monitor-cuerpo { padding: 4px 8px; line-height: 1.3; display: flex; gap: 10px; align-items: baseline; }
+  #monitor-cuerpo .label, #monitor-cuerpo .barra-integridad, #monitor-cuerpo .separador { display: none; }
+  #monitor-cuerpo .valor { font-size: 1.2em; }
+
+  .task-btn { padding: 0 4px; }
+  #taskbar { font-size: 0.7em; }
+}
+
+/* ---------- Ventanas emergentes y final: nunca más anchas que la pantalla ---------- */
+#popup, #popup-camara, #popup-spam, #fin-editor { max-width: 94vw; }
+.popup-espiral { max-width: 90vw; }
+
+/* ---------- Bandeja de entrada (inbox.html) ---------- */
+@media (max-width: 900px) {
+  .card { width: 96vw !important; height: calc(100vh - 24px) !important; }
+  .sidebar { width: 200px !important; }
+}
+@media (max-width: 640px) {
+  .sidebar { width: 64px !important; }
+  .sidebar h2, .conv-info { display: none !important; }
+  .burbuja { max-width: 88% !important; }
+}
+
+/* ---------- Lobby y 404 ---------- */
+@media (max-width: 900px) {
+  #titulo-principal { font-size: min(5em, 10.5vw); letter-spacing: 0.08em; }
+  #links-loby { flex-wrap: wrap; justify-content: center; }
+  #pie { font-size: 0.72em; flex-wrap: wrap; gap: 4px 12px; }
+}
+
+/* ---------- Splash y carga ---------- */
+@media (max-width: 640px) {
+  #logo-wrap { font-size: min(1em, 8vw); }
+  #barra-wrap { width: min(280px, 80vw); }
+}
+
+/* ---------- Game over ---------- */
+@media (max-width: 900px) {
+  #monitor-cuerpo { max-width: 100vw; }
+}

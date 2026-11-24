@@ -5,7 +5,6 @@ var MICRO_LISTA = [
   "anos_monstruos.html",
   "campamento_oferta_y_demanda.html",
   "cosmismo.html",
-  "datos_salvajes.html",
   "diseno_de_oscuridad_y_silencio.html",
   "el_ojo_humano.html",
   "esclavitud_etica.html",
